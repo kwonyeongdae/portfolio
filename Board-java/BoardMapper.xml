@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen.spring.board.teampro.board2.BoardMapper">
+
+<insert id="addcomment" parameterType="com.ezen.spring.board.teampro.board2.Comment">
+INSERT INTO comment (bnum,name,comcontent,comdata) values(#{bnum},#{name},#{comcontent}, CURRENT_TIMESTAMP)
+</insert>
+
+<select id="comlist" resultType="com.ezen.spring.board.teampro.board2.Comment" parameterType="_int">
+SELECT * FROM comment WHERE bnum = #{bnum}
+</select>
+	
+	<select id="getList" resultType="java.util.Map">
+	SELECT b.bnum,bname,title,content,date,hitnum,b.pass,
+	GROUP_CONCAT(a.num) fnums,
+	GROUP_CONCAT(pnum) pnums,
+	GROUP_CONCAT(fname) fname,
+	GROUP_CONCAT(fsize) fsizes,
+	GROUP_CONCAT(contenttype) contenttypes
+	FROM board b LEFT OUTER JOIN attach a ON b.bnum = a.pnum
+	GROUP BY b.bnum
+	ORDER BY b.bnum DESC
+	</select>
+	
+	<select id="getBoard" resultType="java.util.Map" parameterType="Integer">
+	SELECT b.*, a.num, a.fname, a.fsize, fm.name AS name
+FROM board b
+LEFT OUTER JOIN attach a ON b.bnum = a.pnum
+LEFT OUTER JOIN fairymem fm ON b.bname = fm.userid
+WHERE b.bnum = #{bnum}
+	</select>
+	
+	<select id="getsearch" resultType="java.util.Map" parameterType="java.util.Map">
+  SELECT b.bnum, bname, title, content, date, hitnum,
+         GROUP_CONCAT(a.num) AS fnums,
+         GROUP_CONCAT(pnum) AS pnums,
+         GROUP_CONCAT(fname) AS fnames,
+         GROUP_CONCAT(fsize) AS fsizes,
+         GROUP_CONCAT(contenttype) AS contenttypes
+  FROM board b
+  LEFT OUTER JOIN attach a ON b.bnum = a.pnum
+  WHERE
+    <choose>
+      <when test="category == '번호' and key != ''">bnum = #{key}</when>
+      <when test="category == '이름' and key != ''">bname = #{key}</when>
+      <when test="category == '내용' and key != ''">content LIKE CONCAT('%', #{key}, '%')</when>
+    </choose>
+  GROUP BY b.bnum, b.bname, b.title, b.content, b.date, b.hitnum
+  ORDER BY b.bnum DESC
+</select>
+	
+	
+	
+	<insert id="add" parameterType="com.ezen.spring.board.teampro.board2.Boardvo">
+	   	<selectKey keyProperty="bnum" resultType="int" order="AFTER">
+	      SELECT LAST_INSERT_ID()
+	   	</selectKey>
+   	  INSERT INTO board VALUES(NULL,#{bname},#{title},#{content},CURDATE(),#{hitnum},#{pass})
+	</insert>
+	
+	<update id="gethit" parameterType="com.ezen.spring.board.teampro.board2.Boardvo">
+	UPDATE board SET hitnum = hitnum + 1 WHERE bnum = #{bnum}
+	</update>
+	
+	<update id="getupdate" parameterType="com.ezen.spring.board.teampro.board2.Boardvo">
+	UPDATE board SET title=#{title}, content=#{content} WHERE bnum = #{bnum}
+	</update>
+	
+	
+	<delete id="dalete" parameterType="com.ezen.spring.board.teampro.board2.Boardvo">
+	DELETE FROM test.board WHERE bnum = #{bnum}
+	</delete>
+	
+	<delete id="attdalete" parameterType="com.ezen.spring.board.teampro.board2.FileVO">
+	DELETE FROM attach WHERE num = #{num}
+	</delete>
+	
+	<insert id="addfile" parameterType="com.ezen.spring.board.teampro.board2.FileVO">
+   	  INSERT INTO attach (num, pnum, fname, fsize, contenttype) VALUES
+      <foreach collection="list" item="item" separator=", ">
+           ( NULL, #{item.pnum}, #{item.fname}, #{item.fsize}, #{item.contentType} )
+      </foreach>
+      
+	</insert>
+		
+	<select id="getdownload" resultType="String" parameterType="Integer">
+	SELECT fname, contenttype FROM attach WHERE num = #{num};
+	</select>
+	
+	
+	
+</mapper>
