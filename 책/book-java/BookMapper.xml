@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen.spring.board.teampro.book.BookMapper">
+<insert id ="qnaadd" parameterType="com.ezen.spring.board.teampro.book.QnAVO">
+INSERT INTO qna (qnum,userid,qcontent,qnadate) values(#{qnum},#{userid},#{qcontent}, CURRENT_TIMESTAMP)
+</insert>
+
+<insert id="addbook" parameterType="com.ezen.spring.board.teampro.book.Book">
+<selectKey keyProperty="bnum" resultType="int" order="AFTER">
+	      SELECT LAST_INSERT_ID()
+	   	</selectKey>
+INSERT INTO book
+VALUES(NULL,#{bname},#{publisher},#{author},#{price},#{pdate}, #{content}, #{cvrimg},#{cate},#{fsize},#{contenttype})
+</insert>
+
+<insert id="addfile" parameterType="com.ezen.spring.board.teampro.book.Bookattach">
+   	  INSERT INTO bookattach (num, bnum, contentimg, consize, contype) VALUES
+      <foreach collection="list" item="item" separator=", ">
+           ( NULL, #{item.bnum}, #{item.contentimg}, #{item.consize}, #{item.contype} )
+      </foreach>
+  </insert>
+
+<select id="getatt" parameterType="Integer" resultType="com.ezen.spring.board.teampro.book.Bookattach">
+SELECT * FROM bookattach where bnum = #{bnum}
+</select>
+
+<select id="getallbook" resultType="map">
+SELECT * FROM book
+
+</select>
+
+<select id="search" parameterType="com.ezen.spring.board.teampro.book.Book"
+	resultType="com.ezen.spring.board.teampro.book.Book">
+	SELECT * FROM book
+	WHERE
+	<choose>
+		<when test="bname != null">
+			bname = #{bname}
+		</when>
+		<when test="publisher != null">
+			publisher = #{publisher}
+		</when>
+		<when test="author != null">
+			author = #{author}
+		</when>
+		
+	</choose>
+</select>
+
+<select id="CateSearch" parameterType="String"
+	resultType="com.ezen.spring.board.teampro.book.Book">
+	SELECT * FROM book
+	WHERE cate = #{cate}
+	</select>
+
+<select id="getbook" resultType="java.util.Map" parameterType="Integer">
+SELECT b.*,a.contentimg
+FROM book b
+LEFT OUTER JOIN bookattach a ON b.bnum = a.bnum
+where b.bnum=#{bnum}
+</select>
+
+<delete id="getdelete" parameterType="Integer" >
+DELETE FROM test.book WHERE bnum = #{bnum}
+</delete>
+
+<delete id="getattdelete" parameterType="Integer" >
+DELETE FROM test.bookattach WHERE bnum = #{bnum}
+</delete>
+
+    <update id="updateBook" parameterType="com.ezen.spring.board.teampro.book.Book">
+    UPDATE test.book
+    SET bname = #{bname},
+        publisher = #{publisher},
+        author = #{author},
+        price = #{price},
+        content = #{content}
+    WHERE bnum = #{bnum}
+</update>
+
+<update id="updateattach" parameterType="com.ezen.spring.board.teampro.book.Bookattach">
+    UPDATE test.bookattach
+    SET contentimg = #{contentimg},
+        consize = #{consize},
+        contype = #{contype}
+    WHERE bnum = #{bnum}
+</update>
+
+<select id="getMem" resultType="com.ezen.spring.board.teampro.login.MemberVO">
+      SELECT * FROM fairymem WHERE userid = #{userid}
+     </select>
+     
+<select id="getqnalist" resultType="Map" parameterType="Integer">
+SELECT * FROM qna where qnum = #{qnum}
+</select>
+
+<select id="best" resultType="com.ezen.spring.board.teampro.book.Book" parameterType="String">
+SELECT bb.bnum, b.bname, b.price, b.cvrimg, SUM(bb.quantity) AS total_quantity
+FROM test.boughtbook bb
+JOIN test.book b ON bb.bnum = b.bnum
+GROUP BY bb.bnum, b.bname, b.price, b.cvrimg
+ORDER BY total_quantity DESC
+LIMIT 3;
+</select>
+
+<insert id="addreview" parameterType="com.ezen.spring.board.teampro.book.review">
+INSERT INTO review (bnum,bname,userid,reviewcontents,score,rdate)
+VALUE (#{bnum},#{bname},#{userid},#{reviewcontents},#{score},#{rdate})
+
+</insert>
+
+<select id="reviewlist" parameterType="Integer" resultType="map">
+SELECT * FROM test.review WHERE bnum=#{bnum} ORDER BY count DESC
+
+
+</select>
+
+<select id="score" parameterType="int" resultType="java.lang.Double">
+ SELECT ROUND(COALESCE(SUM(score) / COUNT(*), 0.0), 1) AS divided_score
+    FROM test.review
+    WHERE bnum = #{bnum}
+</select> 
+
+<insert id="qnacomment" parameterType="com.ezen.spring.board.teampro.book.Qnacomment">
+INSERT INTO qnacomment (qnum,name,qcomment)
+VALUE (#{qnum},#{name},#{qcomment})
+</insert>
+
+<select id="getallqnacomment" resultType="map">
+SELECT * FROM qnacomment 
+</select>
+
+
+</mapper>
