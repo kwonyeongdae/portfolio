@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>LIST</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px;
+            color: #333;
+            font-size: 36px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #page, #page1 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        #page a {
+            margin: 0 5px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        #div {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #vib {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Password Modal Styles */
+        #passwordModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+#search {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+  }
+  #search label, #search select, #search input, #search button {
+    margin-right: 10px;
+  }
+  #pagenation {
+    margin-top: 20px;
+    text-align: center;
+  }
+  #pagenation a {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    text-decoration: none;
+  }
+  #pagenation span {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #e0e0e0;
+    color: #222;
+  }
+
+.cool{clear: left;} 
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  width: 300px;
+  margin: 0 auto;
+}
+
+    </style>
+</head>
+<body>
+<th:block th:switch="${param.category}">
+    <!-- 카테고리로 검색한 경우 -->
+    <th:block th:case="'title'">
+        <h1>검색 목록</h1>
+        <form id="day" action="/carrot/search" method="post">
+            <table>
+                <thead>
+                    <tr>
+                        <th>이미지</th>
+                        <th>내용</th>
+                        <th>날짜</th>
+                        <th>HIT</th>
+                        <th>판매상태</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${pageInfo.list}">
+                        <td><img th:src="@{'/carrot/' + ${item.cvrimg}}" style="max-width: 100px; max-height: 100px;"></td>
+                        <td><a th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}"></a></td>
+                        <td><span th:text="${#dates.format(item['cdata'], 'yyyy-MM-dd')}"></span></td>
+                        <td th:text="${item.hitnum}"></td>
+                        <td th:text="${item.state}" style="text-decoration:line-through"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </th:block>
+    
+    <!-- 다른 경우(카테고리 없음) -->
+    <th:block th:case="*">
+        <!-- 카테고리로 검색한 경우 총 매출 부분 숨김 -->
+        <h1>상품목록</h1>
+        <hr>
+        <table>
+	   <div id ="vib"><a href="/carrot/add">추가</a></div>
+            <thead>
+                <tr>
+                    <th>이미지</th>
+                    <th>내용</th>
+                    <th>날짜</th>
+                    <th>HIT</th>
+                    <th>판매상태</th>
+                </tr>
+            </thead>
+            <tbody>
+            
+                <tr th:each="item : ${pageInfo.list}">
+                <span th:if="${item.state != '판매완료'}">
+				    <td><img th:src="@{'/carrot/' + ${item.cvrimg}}" style="max-width: 100px; max-height: 100px;"></td>
+				    <td>
+				        
+				            <a th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}"></a>
+				        
+				        <span th:if="${item.state == '판매완료'}" th:text="${item.title}"  style="text-decoration:line-through"></span>
+				    </td>
+				    <td><span th:text="${#dates.format(item['cdata'], 'yyyy-MM-dd')}"></span></td>
+				    <td th:text="${item.hitnum}"></td>
+				    <td th:text="${item.state}"></td>
+				    </span>
+				</tr>
+
+            </tbody>
+        </table>
+    </th:block>
+</th:block>
+
+<div id="page">
+    <div th:if="${pageInfo.hasPreviousPage}">
+        [<a th:href="@{/carrot/list/page/__${pageInfo.prePage}__}">이전</a>]
+    </div>
+    <span th:each="pageNum : ${pageInfo.navigatepageNums}">
+        <span th:if="${pageNum eq pageInfo.pageNum}">
+            <strong style="color: red" th:text="${pageNum}"></strong>
+        </span>
+        <span th:unless="${pageNum eq pageInfo.pageNum}">
+            [<a th:href="@{/carrot/list/page/__${pageNum}__}" th:text="${pageNum}"></a>]
+        </span>
+    </span>
+
+    <div th:if="${pageInfo.hasNextPage}">
+        [<a th:href="@{/carrot/list/page/__${pageInfo.nextPage}__}">다음</a>]
+    </div>
+</div>
+<div id="page1">
+    <div th:if="${pageInfo.pages gt 1}">
+        [<a th:href="@{/carrot/list/page/1}">첫 페이지</a>]
+        [<a th:href="@{/carrot/list/page/__${pageInfo.pages}__}">마지막 페이지</a>]
+    </div>
+</div>
+
+
+
+
+<!---------------------------------검색기능 ----------------------------->
+<div class="cool"></div>
+<hr>
+
+<div id="search">
+    <form id="div" action="/carrot/search" method="post">
+        <select name="category">
+            <option value="title">내용</option>
+        </select>
+        <input type="text" name="keyword">
+        <input type="submit" value="검색">
+    </form>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			background-color: #f5f5f5;
+			margin: 0;
+			padding: 0;
+		}
+		main {
+			width: 80%;
+			margin: 20px auto;
+			background-color: #fff;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			padding: 20px;
+			border-radius: 10px;
+		}
+		h1 {
+			font-size: 32px;
+			font-weight: bold;
+			margin-bottom: 20px;
+			color: #3498db;
+			text-align: center;
+		}
+		h3 {
+			font-size: 24px;
+			margin-bottom: 10px;
+			color: #555;
+			text-align: center;
+		}
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+		table td {
+			padding: 12px;
+			border: 1px solid #ccc;
+		}
+		#item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		#item img {
+			max-width: 150px;
+			max-height: 150px;
+			border-radius: 5px;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+			margin-bottom: 10px;
+		}
+		#item div {
+			text-align: center;
+			color: #333;
+		}
+		#item div:not(:last-child) {
+			margin-bottom: 5px;
+		}
+		#item img:nth-child(n+4) {
+			margin-top: 10px;
+		}
+		.description {
+			margin-top: 20px;
+			line-height: 1.6;
+			color: #555;
+			text-align: justify;
+		}
+		.content-label {
+			font-weight: bold;
+			margin-top: 10px;
+			color: #333;
+		}
+		#item img:last-child,
+		.content-label:last-child {
+			margin-bottom: 0;
+		}
+	</style>
+	
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function comment(){
+	if (!confirm('댓글을 등록할까요?')) return;
+	
+	var obj = {};
+    obj.carnum = '[[${detail[0].cnum}]]';
+    obj.userid = $('#userid').val();
+    obj.comment = $('#comment').val();
+
+    $.ajax({
+      url: '/carrot/comment',
+      method: 'post',
+      data: obj,
+      cache: false,
+      dataType: 'json',
+      success: function(res) {
+        if (res.com) {
+          alert('등록 되었습니다.');
+          location.reload();
+        }
+      },
+      error: function(xhr, status, err) {
+        alert(status + "/" + err);
+      }
+    });
+  }
+ 
+ 
+  
+function to_comment() {
+    if (!confirm('답글을 등록할까요?')) return;
+
+    var obj = {};
+    obj.duserid = $('#userid').val();
+    obj.dcomment = $('#dcomment').val();
+    obj.dcarnum = $('#num').val();
+
+ 
+
+        $.ajax({
+            url: '/carrot/commentocom',
+            method: 'post',
+            data: obj,
+            cache: false,
+            dataType: 'json',
+            success: function(res) {
+                if (res.comto) {
+                    alert('등록 되었습니다.');
+                    location.reload();
+                }
+            },
+            error: function(xhr, status, err) {
+                alert(status + "/" + err);
+            }
+        });
+  
+}
+  
+function interest(){
+	if (!confirm('찜 할까요?')) return;
+	
+	var obj = {};
+	obj.cnum = '[[${detail[0].cnum}]]';
+    obj.userid = $('#userid').val();
+    obj.mainimg = '[[${detail[0].cvrimg}]]';
+    obj.title = '[[${detail[0].title}]]';
+    obj.price = '[[${detail[0].price}]]';
+    obj.state = '판매중'
+    
+    $.ajax({
+      url: '/carrot/interest',
+      method: 'post',
+      data: obj,
+      cache: false,
+      dataType: 'json',
+      success: function(res) {
+        if (res.inter) {
+          alert('추가 되었습니다.');
+          location.reload();
+        }
+      },
+      error: function(xhr, status, err) {
+        alert(status + "/" + err);
+      }
+    });
+  }
+</script>
+<script type="text/javascript">
+function buycarrot() {
+    if (!confirm("선택한 항목을 주문하시겠습니까?")) {
+        return;
+    }
+
+    var item = {
+        cnum: '[[${detail[0].cnum}]]',
+    };
+
+    // AJAX 요청 보내기
+    $.ajax({
+        url: '/carrot/carrotbuy',
+        method: 'post',
+        data: item, // 일반 문자열 데이터 전송
+        cache: false,
+        success: function (res) {
+            location.href = "/fairy/cart/buy";
+        },
+        error: function(xhr, status, err) {
+            alert(status + "/" + err);
+        }
+    });
+}
+
+</script>
+<meta charset="utf-8">
+<title>상세페이지</title>
+</head>
+<body>
+
+<main>
+<h3> Fairy Carrot </h3>
+
+<h1>물품 정보</h1>
+
+<table>
+
+<button type="button" onclick="javascript:interest();">찜하기</button>
+<button type="button" onclick="javascript:buycarrot();">구매하기</button><!-- 이건 아직구현 못함 javascript만들어야함 -->
+	<div id = "item" >
+	<img th:src="@{'/carrot/' + ${detail[0].cvrimg}}" style="max-width: 100px; max-height: 100px;">
+	</div>
+	<br>
+	<div>[[${detail[0].userid}]]</div>
+	<br>
+	<div>[[${detail[0].title}]]</div>
+	<br>
+	<div>[[${detail[0].price}]]</div>
+	<br>
+	<div>[[${detail[0].state}]]</div>
+	<br>
+	<div th:if="${detail[0].contimg1.length() > 0}">
+	<div th:each="item : ${detail}">
+	<img th:src="@{'/carrot/' + ${item.contimg1}}" style="max-width: 100px; max-height: 100px;">
+	</div>
+	</div>
+	<br>
+
+<br>
+	<div>[[${detail[0].content}]]</div>
+	<br>
+	<div>[[${detail[0].cdata}]]</div>
+	<br>
+	<br>
+</table><hr>	
+<table>
+
+<h3>댓글달기</h3>
+<table>
+<div th:each="item : ${com}">
+
+	<tr>
+         <td>
+         	 <input type="hidden" id="num" name="num" >
+		        <script>
+		        var titleFromServer = "[[${item.num}]]"; 
+		        
+		        var titleElement = document.getElementById("num");
+		        titleElement.value = titleFromServer;
+		   		</script>
+             [[${item.userid}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             [[${item.comment}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <span th:text="${#dates.format(item['cardata'], 'yyyy-MM-dd')}"></span>
+         </td>
+    </tr>
+    
+ <div th:each="itemto : ${comto}">   
+    <tr th:if="${item.num == itemto.dcarnum}">
+         <td>
+         	 <input type="hidden" id="dcarnum" name="dcarnum" >
+		        <script>
+		        var titleFromServer = "[[${itemto.dcarnum}]]"; 
+		        
+		        var titleElement = document.getElementById("dcarnum");
+		        titleElement.value = titleFromServer;
+		   		</script>
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${itemto.duserid}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             [[${itemto.dcomment}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             <span th:text="${#dates.format(itemto['dcardata'], 'yyyy-MM-dd')}"></span>
+         </td>
+     </tr>
+</div>
+
+<tr>
+<td>
+<input type="text" id ="dcomment" name = "dcomment" style="width: 500px; padding: 3px;">
+	<button type="button" onclick="javascript:to_comment()">등록</button>
+</td>
+    
+</tr>
+</div>
+</div>
+</table>
+<from id ="addcom">
+	<input type="hidden" id ="userid" name = "userid">
+	<script>
+        var titleFromServer = "[[${userid}]]"; 
+        
+        var titleElement = document.getElementById("userid");
+        titleElement.value = titleFromServer;
+   	</script>
+	<input type="text" id ="comment" name = "comment" style="width: 500px; padding: 3px;">
+	<button type="button" onclick="javascript:comment()">등록</button>
+</from>
+</table>
+</main>
+</body>
+</html>

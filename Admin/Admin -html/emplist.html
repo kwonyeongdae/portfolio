@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>직원목록</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-top: 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function deleted(fnum)
+{	
+
+	var obj = {};
+	obj.fnum = fnum;
+
+
+	if(!confirm("직원이 퇴사했나요?")){
+		return false;
+	}
+	$.ajax(
+			{
+				url:'/fairy/delemp',
+				method:'post',
+				data: obj,
+				cache:false,
+				dataType:'json',
+				success:function(res) {
+					alert(res.del ? '퇴사완료':'퇴사실패');
+					if(del==true){
+						relocation();
+					}
+				},
+				error:function(xhr,status,err){
+					alert(status + "/" + err);
+				}
+			}		
+		);
+	
+}
+</script>
+</head>
+<body>
+<h1>회원목록</h1>
+<table>
+    <tr>
+        <th>아이디</th>
+        <th>이름</th>
+        <th>휴대번호</th>
+        <th>이메일</th>
+        <th>생년월일</th>
+        <th></th>
+    </tr>
+    <span th:each="n : ${emplist}" th:if="${n.number == 9}">
+        <tr>
+            <td>[[${n.userid}]]</td>
+            <td>[[${n.name}]]</td>
+            <td>[[${n.phone}]]</td>
+            <td>[[${n.email}]]</td>
+            <td>[[${n.birth}]]</td>
+            <td><button type="button" th:onclick="'deleted(' + ${n.fnum} + ');'">퇴사</button></td>
+        </tr>
+    </span>
+</table>
+</body>
+</html>

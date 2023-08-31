@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen.spring.board.teampro.carrotmarket.CarrotMapper">
+
+<insert id="addcarrot" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+<selectKey keyProperty="cnum" resultType="int" order="AFTER">
+	      SELECT LAST_INSERT_ID()
+	   	</selectKey>
+INSERT INTO carrot
+VALUES(NULL,#{userid},#{cvrimg},#{imgsize},#{imgtype},#{price}, #{title}, #{content},#{hitnum},#{state},#{number},CURRENT_TIMESTAMP)
+</insert>
+
+<insert id="addcarrotfile" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotAttach">
+    INSERT INTO carrotattach (num, cnum, contimg1, contsize1, conttype1)
+    VALUES
+    <foreach collection="list" item="item" separator=", ">
+        (NULL, #{item.cnum}, #{item.contimg1}, #{item.contsize1}, #{item.conttype1})
+    </foreach>
+</insert>
+
+<select id="getcarrot" resultType="map">
+SELECT * FROM carrot
+</select>
+
+<select id="search" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO"
+	resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	SELECT * FROM carrot
+	<if test="title != null">
+	WHERE title LIKE CONCAT('%', #{title}, '%')
+	</if>	
+</select>
+
+<update id="gethit" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	UPDATE carrot SET hitnum = hitnum + 1 WHERE cnum = #{cnum}
+	</update>
+
+<select id="getcarrottoattach" resultType="java.util.Map" parameterType="Integer">
+SELECT b.*,a.num,a.contimg1
+FROM carrot b
+LEFT OUTER JOIN carrotattach a ON b.cnum = a.cnum
+where b.cnum=#{cnum}
+</select>
+
+<update id="updatecarrot" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+    UPDATE test.carrot
+    SET
+        <if test="cvrimg != null">
+            cvrimg = #{cvrimg},
+        </if>
+        price = #{price},
+        title = #{title},
+        content = #{content}
+    WHERE cnum = #{cnum}
+</update>
+
+<delete id="delattach" parameterType="Integer">
+DELETE FROM test.carrotattach WHERE num = #{num}
+</delete>
+
+<insert id ="comtadd" parameterType="com.ezen.spring.board.teampro.carrotmarket.Carrotcomment">
+INSERT INTO carrotcomment (carnum,userid,comment,cardata) values(#{carnum},#{userid},#{comment}, CURRENT_TIMESTAMP)
+</insert>
+
+<select id="getcomment" resultType="map">
+SELECT * FROM carrotcomment WHERE carnum = #{carnum} 
+</select>
+
+<insert id ="comtocomadd" parameterType="com.ezen.spring.board.teampro.carrotmarket.Carrotcomment1">
+INSERT INTO carrotcomment1 (dcarnum,duserid,dcomment,dcardata) values(#{dcarnum},#{duserid},#{dcomment}, CURRENT_TIMESTAMP)
+</insert>
+
+<select id="getcommenttocom" resultType="map">
+SELECT * FROM carrotcomment1
+</select>
+
+<insert id="interest" parameterType="com.ezen.spring.board.teampro.carrotmarket.Interest">
+INSERT INTO interest values(NULL,#{cnum},#{userid},#{mainimg},#{title},#{price},#{state})
+</insert>
+
+<select id="getinterest" resultType="map">
+SELECT * FROM interest WHERE userid = #{userid} 
+</select>
+
+<select id="get_to_buy" resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO" parameterType="Integer">
+SELECT * FROM carrot WHERE cnum = #{cnum}
+</select>
+
+<update id="state" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+UPDATE carrot SET state = '판매자확인중' WHERE userid = #{saleuserid}
+</update>
+
+<insert id="boughtcarrot" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+INSERT INTO boughtcarrot values(NULL,#{cnum},#{buyuserid},#{title},#{price},CURRENT_TIMESTAMP,#{saleuserid},0,#{payment})
+</insert>
+
+</mapper>
+ 

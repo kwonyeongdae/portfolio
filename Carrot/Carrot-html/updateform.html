@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+            padding: 0;
+        }
+
+        h1 {
+        text-align :center;
+            font-size: 24px;
+        }
+
+        form {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        form div {
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+         #content,#content1,#content2 {
+        width: 590px;
+        height: 150px; /* 높이를 조절하여 보여질 줄의 개수를 설정합니다. */
+        padding: 10px; /* 원하는 여백을 설정합니다. */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: none; /* 사용자가 크기를 조절하지 못하도록 설정합니다. */
+    }
+
+        input[type="file"] {
+            padding-top: 10px;
+        }
+
+        #thumbnail_view {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+
+        #thumbnail_view img {
+            max-width: 100%;
+            max-height: 150px;
+        }
+
+        button {
+            background-color: gray;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .error-message {
+            color: red;
+        }
+    </style>
+    
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function add(){
+  
+	var title = document.getElementById("title").value;
+   var price  = document.getElementById("price").value;
+   var content = document.getElementById("content").value;
+
+   
+
+     if (title == "") {
+       alert("'글 제목' 입력은 필수입니다");
+       return false;
+     } else if (price == "") {
+       alert("'가격' 입력은 필수입니다");
+       return false;
+     }else if (content == "") {
+      alert("'글쓰기' 입력은 필수입니다");
+       return false;
+     }
+   
+   if (!confirm("글을 모두 작성하셨나요?")) {
+       return false;
+   }
+   $('#btnUpload').prop('disabled', true);
+   var form = $('#addform')[0];
+    var formData = new FormData(form);
+   $.ajax({
+      url:'/carrot/update',
+       data: formData,
+       enctype: 'multipart/form-data',
+         method: 'post',
+         cache: false,
+         dataType: 'json',
+         processData: false,
+         contentType: false,
+         timeout: 3600,
+      success:function(res) {
+         alert(res.updated ? '저장 성공':' 저장 실패');
+         location.href = "/carrot/list/page/1"
+
+      },
+      error:function(xhr,status,err) {
+         alert('에러:' + err);
+          $('#btnUpload').prop('disabled', false);
+      }
+   });
+   return false;
+}
+
+function preview(evt) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
+
+function preview1(evt) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view1");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
+
+function preview2(evt) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view2");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
+
+function preview3(evt) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view3");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
+
+function preview4(evt) {
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view4");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
+</script>
+
+<script type="text/javascript">
+function attremove(num){
+	if (!confirm("파일을 삭제겠습니까?")) {
+	    return false;
+	}
+	var obj = {};
+	obj.num = num;
+	alert(num);
+
+	$.ajax({
+	    url: '/carrot/del',
+	    data:obj,
+	    method: 'post',
+	    cache: false,
+	    dataType: 'json',  
+	    success: function(res) {
+	    	var message = res.delete ? "삭제 성공" : "삭제 실패";
+	        alert(message);
+	        	location.reload();
+	        
+	    },
+	    error: function(err) {
+	        alert('에러: ' + err);
+	    }
+	});
+}
+</script>
+<meta charset="utf-8">
+<title>업데이트 폼</title>
+</head>
+<body>
+<h1>물건 수정</h1>
+<form id="addform" onsubmit="return add();">
+    
+    <img th:src="@{'/carrot/' + ${up[0].cvrimg}}" style="max-width: 100px; max-height: 100px;">
+    <div th:if="${up[0].cvrimg == null}">
+        <label for="img">메인이미지</label>
+        <input type="file" id="file1" name="file1" onchange="preview(event);">
+    
+   <div id="thumbnail_view">
+                <span>Preview Image</span>
+            </div>
+            </div>
+    <div>
+        <label>글 제목</label>
+        <input type="text" id="title" name="title" >
+        <script>
+        var titleFromServer = "[[${up[0].title}]]"; 
+        
+        var titleElement = document.getElementById("title");
+        titleElement.value = titleFromServer;
+   		</script>
+    </div>
+    
+    <div>
+        <label>가격</label>
+        <input type="text" id="price" name="price" >
+        <script>
+        var titleFromServer = "[[${up[0].price}]]"; 
+        
+        var titleElement = document.getElementById("price");
+        titleElement.value = titleFromServer;
+   		</script>
+    </div>
+    
+    <div th:each="img : ${up}">
+    <div th:switch="${up[0].contimg1.length()}">
+   
+    <th:block th:case="0">
+    <label for="file2">이미지1</label>
+    <input type="file" id="file2" name="file2" onchange="preview1(event);">
+    <div id="thumbnail_view1">
+        <span>Preview Image</span>
+    </div>
+    
+        <label for="file2">이미지2</label>
+        <input type="file" id="file3" name="file2" onchange="preview2(event);">
+        <div id="thumbnail_view2">
+            <span>Preview Image</span>
+        </div>
+        
+        <label for="file2">이미지3</label>
+        <input type="file" id="file4" name="file2" onchange="preview3(event);">
+        <div id="thumbnail_view3">
+            <span>Preview Image</span>
+        </div>
+        
+        <label for="file2">이미지4</label>
+        <input type="file" id="file5" name="file2" onchange="preview4(event);">
+        <div id="thumbnail_view4">
+            <span>Preview Image</span>
+        </div>
+    </th:block>
+<!----------------------------------------사진 업데이트시 사진이 1개만 있다면 ----------------------------------------------------->
+<!----------------------------------------사진 업데이트시 사진이 1개만 있다면 ----------------------------------------------------->     
+    <th:block th:case="1">
+
+        <label for="file2">이미지2</label>
+        <input type="file" id="file3" name="file2" onchange="preview2(event);">
+        <div id="thumbnail_view2">
+            <span>Preview Image</span>
+        </div>
+        
+        <label for="file2">이미지3</label>
+        <input type="file" id="file4" name="file2" onchange="preview3(event);">
+        <div id="thumbnail_view3">
+            <span>Preview Image</span>
+        </div>
+        
+        <label for="file2">이미지4</label>
+        <input type="file" id="file5" name="file2" onchange="preview4(event);">
+        <div id="thumbnail_view4">
+            <span>Preview Image</span>
+        </div>
+    </th:block>
+<!----------------------------------------사진 업데이트시 사진이 2개만 있다면 ----------------------------------------------------->     
+<!----------------------------------------사진 업데이트시 사진이 2개만 있다면 ----------------------------------------------------->     
+    <th:block th:case="2">
+
+        <label for="file2">이미지3</label>
+        <input type="file" id="file4" name="file2" onchange="preview3(event);">
+        <div id="thumbnail_view3">
+            <span>Preview Image</span>
+        </div>
+        
+        <label for="file2">이미지4</label>
+        <input type="file" id="file5" name="file2" onchange="preview4(event);">
+        <div id="thumbnail_view4">
+            <span>Preview Image</span>
+        </div>
+    </th:block>
+<!----------------------------------------사진 업데이트시 사진이 3개만 있다면 ----------------------------------------------------->
+<!----------------------------------------사진 업데이트시 사진이 3개만 있다면 ----------------------------------------------------->      
+    <th:block th:case="3">
+
+        <label for="file2">이미지4</label>
+        <input type="file" id="file5" name="file2" onchange="preview4(event);">
+        <div id="thumbnail_view4">
+            <span>Preview Image</span>
+        </div>
+    </th:block>
+    <th:block th:case="*">
+            <div th:if="${up[0].contimg1.length() > 0}">
+                <img th:src="@{'/carrot/' + ${img.contimg1}}" style="max-width: 100px; max-height: 100px;">
+                <a th:href="'javascript:attremove(' + ${img.num} + ');'" title="첨부파일 삭제">[X]<br></a>
+            </div>
+        </th:block>
+</div>
+
+</div>
+
+
+<!----------------------------------------업데이트시 cnum전송용 ----------------------------------------------------->        
+      <input type="hidden" id="cnum" name="cnum" >
+        <script>
+        var titleFromServer = "[[${up[0].cnum}]]"; 
+        
+        var titleElement = document.getElementById("cnum");
+        titleElement.value = titleFromServer;
+   		</script>
+<!----------------------------------------업데이트시 cnum전송용 ----------------------------------------------------->        
+      
+          <div>
+        <label>글쓰기<a style="color: red; font-size: 5px;">*이미지파일이 존재하면 이미지파일이 먼저 나옵니다*</a></label>
+        <textarea id="content" name="content" ></textarea>
+        <script>
+        var titleFromServer = "[[${up[0].content}]]"; 
+        
+        var titleElement = document.getElementById("content");
+        titleElement.value = titleFromServer;
+   		</script>
+    </div>
+    <div>
+        <button id="btnUpload" type="submit">확인</button>
+    </div>
+</form>
+</body>
+</html>

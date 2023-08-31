@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px;
+            color: #333;
+            font-size: 36px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #div {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+
+    </style>
+<meta charset="utf-8">
+<title>관심 품목</title>
+</head>
+<body>
+<h1>[[${userid}]]님의 찜 상품</h1><hr>
+	<table>
+        <thead>
+            <tr>
+                <th>이미지</th>
+                <th>내용</th>
+                <th>가격</th>
+                <th>판매상태</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="item : ${inter}">
+                <td><img th:src="@{'/carrot/' + ${item.mainimg}}" style="max-width: 100px; max-height: 100px;"></td>
+                <td><a th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}"></a></td>
+                <td th:text="${item.price}"></td>
+                <td th:text="${item.state}"></td>
+            </tr>
+        </tbody>
+    </table>
+	</body>
+</html>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen.spring.board.teampro.cart.CartMapper">
+
+<insert id="getcart" parameterType="com.ezen.spring.board.teampro.cart.BookVO">
+INSERT INTO cart (userid, bname, price, quantity, cvrimg, name)
+SELECT #{userid},#{bname}, b.price, #{quantity}, b.cvrimg, f.name
+FROM book b, fairymem f
+WHERE f.userid = #{userid}
+  AND b.bname = #{bname}
+</insert>
+
+<update id="updatequantity" parameterType="com.ezen.spring.board.teampro.cart.BookVO">
+  UPDATE cart SET
+  quantity = quantity + #{quantity}
+  WHERE userid = #{userid} AND bname = #{bname}
+</update>
+
+<select id="getlist" resultType="com.ezen.spring.board.teampro.cart.BookVO" parameterType="String">
+  SELECT bname,cvrimg, name, userid, SUM(quantity) AS totalQuantity, SUM(quantity * price) AS totalPrice
+  FROM cart
+  WHERE userid = #{userid}
+  GROUP BY bname, cvrimg, name, userid
+</select>
+
+<update id="quantityUpdate" parameterType="com.ezen.spring.board.teampro.cart.BookVO">
+  UPDATE cart SET quantity = #{quantity} WHERE bname = #{bname}
+</update>
+
+<delete id="getdelete" parameterType="java.util.List">
+DELETE FROM test.cart WHERE bname = #{bname}
+</delete>
+
+<delete id="getdeleteAll" parameterType="java.util.List">
+DELETE FROM test.cart 
+</delete>
+
+<select id="getbeylist" resultType="com.ezen.spring.board.teampro.cart.BookVO" parameterType="String">
+  SELECT bname, cvrimg, name, SUM(quantity) AS totalQuantity, SUM(quantity * price) AS totalPrice
+FROM cart 
+WHERE bname = #{bname}
+AND userid = #{userid}
+GROUP BY bname, cvrimg,name
+</select>
+
+<insert id="boughtbook" parameterType="java.util.Map">
+    INSERT INTO boughtbook (bnum,userid, bname, price, quantity, cvrimg, statu, payment,buyday)
+    SELECT bnum,#{userid}, #{bname}, price, #{quantity} ,cvrimg, 0, #{payment}, CURRENT_TIMESTAMP
+    FROM book
+    WHERE bname = #{bname}
+</insert>
+
+<select id="boughtlist" resultType="com.ezen.spring.board.teampro.admin.AdminVO" parameterType="String">
+SELECT * FROM boughtbook
+WHERE buyday >= NOW() - INTERVAL 10 SECOND
+AND userid = #{userid}
+</select>
+
+
+<select id="buylist" resultType="com.ezen.spring.board.teampro.cart.BookVO" parameterType="String">
+SELECT MAX(bnum) AS bnum, userid, bname, MAX(quantity) AS quantity, MAX(price) AS price, MAX(cvrimg) AS cvrimg
+FROM boughtbook
+WHERE userid = #{userid}
+GROUP BY userid, bname
+</select>
+
+<update id="updateMileage" parameterType="java.util.Map">
+    UPDATE test.fairymem
+    SET mileage = mileage + (SELECT SUM(quantity * price) / 10
+                             FROM test.cart
+                             WHERE userid = #{userid}
+                               )
+    WHERE userid = #{userid}
+</update>
+
+<select id="mileage" parameterType="String" resultType="com.ezen.spring.board.teampro.cart.BookVO">
+   SELECT mileage FROM fairymem WHERE userid = #{userid}
+</select>
+
+<update id="carrotpointdown" parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+UPDATE fairymem SET carrotpoint = carrotpoint - #{carrotpoint} WHERE userid = #{userid}
+</update>
+
+<update id="mileagedown" parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+UPDATE fairymem SET mileage = mileage - #{mileage} WHERE userid = #{userid}
+</update>
+
+<delete id="changebook" parameterType="com.ezen.spring.board.teampro.cart.BookVO">
+DELETE FROM test.boughtbook WHERE num = #{num}
+</delete>
+
+<update id="OkBuy" parameterType="com.ezen.spring.board.teampro.cart.BookVO">
+UPDATE test.boughtbook SET statu = 1 WHERE num = #{num}
+</update>
+
+<select id="getchange" resultType="com.ezen.spring.board.teampro.admin.AdminVO">
+ SELECT * FROM boughtbook WHERE num = #{num}
+</select>
+
+<select id="boughtcarrot" resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO" parameterType="String">
+SELECT * FROM boughtcarrot
+WHERE cdata >= NOW() - INTERVAL 10 SECOND
+AND buyuserid = #{userid}
+</select>
+</mapper>

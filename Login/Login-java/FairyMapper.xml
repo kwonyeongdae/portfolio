@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ezen.spring.board.teampro.login.FairyMapper">
+	<insert id="addfairyMem"
+     parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+     INSERT INTO fairymem (fnum, userid, pass, name, phone, email, postal_code, contact_address, detailed_address, birth, gender, agrStipulation1, agrStipulation2, agrStipulation3, number,carrotpoint,mileage) 
+     VALUES(NULL, #{userid}, #{pass}, #{name}, #{phone}, #{email}, #{postal_code}, #{contact_address}, #{detailed_address}, #{birth}, #{gender}, #{agrStipulation1}, #{agrStipulation2}, #{agrStipulation3}, 0,#{carrotpoint},0)
+   </insert>
+
+  
+    <select id="joinIdCheck" 
+      parameterType="com.ezen.spring.board.teampro.login.MemberVO" resultType="Integer">
+      SELECT COUNT(*) FROM fairymem WHERE userid = #{userid}
+    </select>
+
+    <select id="joinEmailCheck" 
+      parameterType="com.ezen.spring.board.teampro.login.MemberVO" resultType="Integer">
+      SELECT COUNT(*) FROM fairymem WHERE email = #{email}
+    </select> 
+    
+     <select id="loginCheck" parameterType="com.ezen.spring.board.teampro.login.MemberVO" resultType="com.ezen.spring.board.teampro.login.MemberVO">
+      SELECT number FROM fairymem WHERE userid = BINARY #{userid} AND pass = BINARY #{pass}
+    </select>
+     
+     <select id="getJoinedMem" parameterType="string" resultType="com.ezen.spring.board.teampro.login.MemberVO">
+      SELECT * FROM fairymem WHERE userid = #{userid}
+     </select>
+     
+     <select id="getboughtbook" parameterType="string" resultType="com.ezen.spring.board.teampro.admin.AdminVO">
+      SELECT * FROM boughtbook WHERE userid = #{userid}
+     </select>
+     
+     <select id="adminLoginCheck" parameterType="com.ezen.spring.board.teampro.login.MemberVO" resultType="Integer">
+      SELECT COUNT(*) FROM fairymem WHERE userid = #{userid} AND pass = BINARY #{pass} AND number=9
+    </select>
+
+
+<update id="updatedMem"
+      parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+      UPDATE fairymem SET pass=#{pass}, phone=#{phone}, email=#{email}, postal_code=#{postal_code}, contact_address=#{contact_address}, detailed_address=#{detailed_address}, agrStipulation3=#{agrStipulation3} WHERE fnum=#{fnum}
+   </update>
+
+     
+    <select id="getMem" resultType="com.ezen.spring.board.teampro.login.MemberVO">
+      SELECT * FROM fairymem
+     </select>
+     
+     <select id="restMem" resultType="com.ezen.spring.board.teampro.login.MemberVO">
+      SELECT * FROM fairymem WHERE number = 5
+     </select>
+     
+     <update id="restEsc" parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+      UPDATE fairymem SET number=0 WHERE fnum=#{fnum}
+   </update>
+    
+    <select id="userExists" parameterType="com.ezen.spring.board.teampro.login.MemberVO" resultType="Integer">
+         SELECT COUNT(*) FROM fairymem WHERE userid = #{userid}
+    </select>
+    <update id="empdel"
+      parameterType="Integer">
+      UPDATE fairymem SET number=5 WHERE fnum=#{fnum}
+   </update>
+   
+   <delete id="deleteMember" parameterType="Integer">
+      DELETE FROM fairymem WHERE fnum=#{fnum}
+   </delete>
+   
+   <update id="pointdown" parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+      UPDATE fairymem SET carrotpoint = carrotpoint - #{carrotpoint}  WHERE userid=#{uid}
+</update>
+
+<select id="getboughtcarrot" resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO" parameterType="String">
+      SELECT * FROM boughtcarrot WHERE buyuserid = #{userid}
+</select>
+
+<select id="getcarrot" resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO" parameterType="String">
+      SELECT * FROM carrot WHERE userid = #{userid}
+</select>
+
+<update id="state" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	UPDATE carrot SET state = '거래중' WHERE userid = #{userid} and cnum = #{cnum}
+</update>
+
+<update id="pointup" parameterType="com.ezen.spring.board.teampro.login.MemberVO">
+	UPDATE fairymem SET carrotpoint = carrotpoint + #{carrotpoint} WHERE userid=#{uid}
+</update>
+
+<update id="Laststate" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	UPDATE carrot SET state = '판매완료' WHERE userid = #{uid} and cnum = #{cnum}
+</update>
+
+<update id="boughtupdata" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	UPDATE boughtcarrot SET state = 1 WHERE buyuserid = #{userid} and cnum = #{cnum}
+</update>
+</mapper>
