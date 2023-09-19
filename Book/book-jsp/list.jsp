@@ -170,7 +170,7 @@ function buyuser(){
     color: #222;
   }
         .floating-wrapper {
-       
+       position: relative;  /* 내가 추가한 한 줄 */
       position: fixed;
       right: 10px; /* 오른쪽 위치 조정///////  최근본 박스 */
       top: 10px; /* 위쪽 위치 조정 */
@@ -190,6 +190,40 @@ function buyuser(){
   max-height: 100px; /* 이미지의 최대 높이를 150px로 조정 */
   object-fit: contain; /* 이미지가 비율을 유지하면서 컨테이너에 맞게 조정되도록 함 */
     }
+    
+  /*  아래부터가 내가 추가한 내용  */
+  .floating-wrapper.collapsed {
+   width: 0;
+   overflow: hidden;
+   }
+
+  #toggleButton {
+   position: fixed;
+   right: calc(10px + 220px); /* floating-wrapper의 right 값 + width 값 */
+   width: auto; /* 버튼의 너비를 내용에 맞게 자동으로 조정합니다. */
+   padding: 5px; /* 버튼 내부의 여백을 추가합니다. */
+  }
+  
+  #toggleButton .expand-text {
+    display: none;
+  }
+  
+  .floating-wrapper.collapsed #toggleButton {
+    right: 10px;
+  }
+  
+  #toggleButton .collapse-text {
+    display: inline;
+  }
+
+  .floating-wrapper.collapsed #toggleButton .expand-text {
+    display: inline;
+  }
+
+  .floating-wrapper.collapsed #toggleButton .collapse-text {
+     display: none;
+  }
+  /* 여기까지 내가 추가한 내용  */
   
   
 </style>
@@ -345,11 +379,38 @@ function admin(){
 	}
 	}
 
+
+//내가 추가한 내용
+
+$(document).ready(function() {
+    $('#toggleButton').click(function() {
+        var isCollapsed = $('#floatingWrapper').toggleClass('collapsed').hasClass('collapsed');
+        $(this).css('right', isCollapsed ? '10px' : 'calc(10px + 220px)');
+        $(this).find('.expand-text').css('display', isCollapsed ? 'inline' : 'none');
+        $(this).find('.collapse-text').css('display', isCollapsed ? 'none' : 'inline');
+    });
+});
+
+
+$(document).ready(function() {
+    var recommendationsStr = '<c:out value="${recommendations}" />';  // JSP 표현식 대신 c:out 태그 사용
+    var recommendations = JSON.parse(recommendationsStr);  // JSON 문자열 파싱
+    
+    for (var i = 0; i < recommendations.length; i++) {
+        var recommendation = recommendations[i];
+        
+        $('#recommendationList').append('<li>' + recommendation.title + '</li>');
+    }
+});
+
 </script>
 </head>
 <body>
 <main>
    <h3> fairy book's </h3>
+
+	<!-- 내가 추가한 내용 추천시스템 테스트용 -->
+	<a href="/fairy/fairybooks">AI가 알려주는 당신만의 동화책</a>
 
    <div class="container">
       <ul class="tabs">
@@ -392,7 +453,7 @@ function admin(){
    [<a href="/fairy/cart/buylist/${userid}"> 구매목록 </a>]
       [<a href="/carrot/list/page/1">당근마켓</a>]
       [<a href="/fairy/cart/list">장바구니</a>]
-      [<a href="/fairy/cart/buy">결제창</a>]
+      [<a href="/fairy/editMem/${userid}">개인정보수정</a>]  <!-- 없던 부분임 내가 추가한 내용 -->
       [<a href="javascript:mypagego()">마이페이지</a>]
       [<a href="javascript:logout();">로그아웃</a>]
    </c:when>
@@ -405,7 +466,7 @@ function admin(){
       [<a href="/fairy/cart/buylist/${userid}"> 구매목록 </a>]
       [<a href="/carrot/list/page/1">당근마켓</a>]
       [<a href="/fairy/cart/list">장바구니</a>]
-      [<a href="/fairy/cart/buy">결제창</a>]
+      [<a href="/fairy/editMem/${userid}">개인정보수정</a>] <!-- 내가 문구 수정함 -->
       [<a href="javascript:mypagego()">마이페이지</a>]
       [<a href=javascript:logout();>로그아웃</a>]
    </c:otherwise>
@@ -419,13 +480,22 @@ function admin(){
       </div>
    
    </div>
-   
-   <div class="floating-wrapper" >
+
+   <div id="floatingWrapper" class="floating-wrapper" >    <!-- 여기서 id="floatingWrapper"만 내가 추가한 내용 -->
     <div class="title">[최근본 상품]</div>
+    
+   <!-- 아래부터가 내가 추가한 내용 버튼 태그 -->
+    <button id="toggleButton">
+      <span class="expand-text">펼치기</span>
+      <span class="collapse-text">접기</span>
+     </button>
+    <!-- 여기까지가 내가 추가한 내용 버튼 태그 --> 
+     
        <div id="cookieValueWrapper">
     
        </div>
     </div>
+    
 
     <h1>이달의 베스트셀러</h1> 
    
@@ -443,14 +513,6 @@ function admin(){
       </div>
       </c:forEach>
 	<div class="clear"></div>
-
-
-
-
-
-
-
-
 
    
 <h1>도서 목록</h1>
@@ -503,7 +565,7 @@ function admin(){
 
    </div>
    
-   <nav id= "pagenation">
+<nav id= "pagenation">
       <c:forEach var = "pn" items="${pageInfo.navigatepageNums}">
          <c:choose>
             <c:when test="${pn==pageInfo.pageNum}">
@@ -516,24 +578,17 @@ function admin(){
                <c:param name="keyword" value="${keyword}"/>
             </c:if>
             
-            
-            
             </c:url>
             <a href="${pgURL}">${pn}</a>
+            </c:otherwise>
+         </c:choose>
+      </c:forEach>
             <a href="/book/list/page/${pn+1}" style="float:right"> <button> > </button> </a>
             <a href="/book/list/page/${pn-1}" style="float:left"> <button> < </button></a>
             <c:if test="${pn<PageInfo.totalpages }">
-            
             </c:if>         
             
-            </c:otherwise>
-
-         </c:choose>
-
-      </c:forEach>
-
-   </nav>
-
+</nav>
 
 </main>
 

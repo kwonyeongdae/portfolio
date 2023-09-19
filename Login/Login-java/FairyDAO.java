@@ -121,7 +121,30 @@ public class FairyDAO
  	   boolean Laststate = fairyMapper.Laststate(uid,cnum)>0;
  	   boolean pointup = fairyMapper.pointup(carrotpoint, uid)>0;
  	   boolean state = fairyMapper.boughtupdata(userid, cnum)>0;
-    	return Laststate&&pointup&&state;
+ 	   boolean int_state = fairyMapper.up_state(cnum)>0;
+    	return Laststate&&pointup&&state&&int_state;
     }
     
+    public String findIDByNameAndPhone(MemberVO mem) 
+    {
+       return fairyMapper.findIDByNameAndPhone(mem);
+    }
+
+    
+    public String findIDByNameAndEmail(MemberVO mem) 
+    {
+       return fairyMapper.findIDByNameAndEmail(mem);
+    }
+
+
+    public String findPassByNameAndPhone(MemberVO mem) 
+    {
+       return fairyMapper.findPassByNameAndPhone(mem);
+    }
+    
+    public String findPassByNameAndEmail(MemberVO mem) 
+    {
+       return fairyMapper.findPassByNameAndEmail(mem);
+    }
+
 }

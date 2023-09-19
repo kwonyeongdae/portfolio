@@ -4,8 +4,8 @@
 <mapper namespace="com.ezen.spring.board.teampro.login.FairyMapper">
 	<insert id="addfairyMem"
      parameterType="com.ezen.spring.board.teampro.login.MemberVO">
-     INSERT INTO fairymem (fnum, userid, pass, name, phone, email, postal_code, contact_address, detailed_address, birth, gender, agrStipulation1, agrStipulation2, agrStipulation3, number,carrotpoint,mileage) 
-     VALUES(NULL, #{userid}, #{pass}, #{name}, #{phone}, #{email}, #{postal_code}, #{contact_address}, #{detailed_address}, #{birth}, #{gender}, #{agrStipulation1}, #{agrStipulation2}, #{agrStipulation3}, 0,#{carrotpoint},0)
+     INSERT INTO fairymem (fnum, userid, pass, name, phone, email, postal_code, contact_address, detailed_address, age, gender, agrStipulation1, agrStipulation2, agrStipulation3, number,carrotpoint,mileage) 
+     VALUES(NULL, #{userid}, #{pass}, #{name}, #{phone}, #{email}, #{postal_code}, #{contact_address}, #{detailed_address}, #{age}, #{gender}, #{agrStipulation1}, #{agrStipulation2}, #{agrStipulation3}, 0,#{carrotpoint},0)
    </insert>
 
   
@@ -93,4 +93,37 @@
 <update id="boughtupdata" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
 	UPDATE boughtcarrot SET state = 1 WHERE buyuserid = #{userid} and cnum = #{cnum}
 </update>
+
+<update id="up_state" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
+	UPDATE interest SET state = '판매완료' WHERE cnum = #{cnum}
+</update>
+
+<select id="findIDByNameAndPhone"
+     parameterType="com.ezen.spring.board.teampro.login.MemberVO"
+     resultType="string">
+     SELECT userid FROM fairymem WHERE name = #{name} and phone = #{phone}
+   </select>
+
+   
+  <select id="findIDByNameAndEmail"
+      parameterType="com.ezen.spring.board.teampro.login.MemberVO"
+      resultType="string">
+      SELECT userid FROM fairymem WHERE name = #{name} and email = #{email}
+   </select>
+
+   
+   <select id="findPassByNameAndPhone"
+     parameterType="com.ezen.spring.board.teampro.login.MemberVO"
+     resultType="string">
+     SELECT pass FROM fairymem WHERE name = #{name} and phone = #{phone}
+   </select>
+
+   
+  <select id="findPassByNameAndEmail"
+      parameterType="com.ezen.spring.board.teampro.login.MemberVO"
+      resultType="string">
+      SELECT pass FROM fairymem WHERE name = #{name} and email = #{email}
+   </select>
+
+
 </mapper>

@@ -13,9 +13,9 @@ public class review {
 	private String reviewcontents;
 	private int score;
 	private java.util.Date rdate = new Date();
-	
+	private int count;
 	public review(){}
-	public review(int bnum, String bname, String userid, String reviewcontents, int score, Date rdate) {
+	public review(int bnum, String bname, String userid, String reviewcontents, int score, Date rdate,int count) {
 		super();
 		this.bnum = bnum;
 		this.bname = bname;
@@ -23,6 +23,15 @@ public class review {
 		this.reviewcontents = reviewcontents;
 		this.score = score;
 		this.rdate = rdate;
+		this.count = count;
+	}
+	
+	
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
 	}
 	public int getBnum() {
 		return bnum;

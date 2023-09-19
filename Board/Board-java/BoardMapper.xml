@@ -73,7 +73,7 @@ WHERE b.bnum = #{bnum}
 	</delete>
 	
 	<delete id="attdalete" parameterType="com.ezen.spring.board.teampro.board2.FileVO">
-	DELETE FROM attach WHERE num = #{num}
+	DELETE FROM attach WHERE pnum = #{num}
 	</delete>
 	
 	<insert id="addfile" parameterType="com.ezen.spring.board.teampro.board2.FileVO">

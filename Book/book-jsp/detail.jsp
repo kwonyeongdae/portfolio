@@ -295,7 +295,7 @@ $(document).ready(function() {
       
 function add_cart(bnum)
 {	
-    	  var usernum = '${rest.number}';
+    	  var usernum = '${user.number}';
     	  var setnum = 5;
     	  if(usernum==setnum){
     		  alert("휴먼계정을 먼저 해체하세요");
@@ -506,7 +506,7 @@ function logout(){
     var obj = {};
     obj.qnum = num;
     obj.name = '관리자'; // 관리자로 하드코딩되었습니다. 원하는 값을 넣어주세요.
-    obj.qcomment = $('#qcomment').val();
+    obj.qcomment = $('#qcomment'+num).val();
 
     $.ajax({
       url: '/book/qnacomment',
@@ -532,7 +532,7 @@ function logout(){
 <body>
 
 <main>
-<h3> fairy book's </h3>
+<h3 id ="h3"><a href="/book/list/page/1" style ="color: white;">fairy book's</a></h3>
 
 	<div class="container">
 		<ul class="tabs">
@@ -604,12 +604,9 @@ function logout(){
 	<button type = "button" onclick="show_cart();">장바구니 보기</button></div>
 	<br>
 </table>	
-	<!------------------------------------------------ 이부분부터 리뷰와 Q&A가 시작됨 --------------------------------------------------->
+<!------------------------------------------------ 이부분부터 리뷰와 Q&A가 시작됨 --------------------------------------------------->
 <!------------------------------------------------ 이부분부터 리뷰와 Q&A가 시작됨 --------------------------------------------------->
 <div style="text-align: center; font-size: 30px;">최근 리뷰</div>
-
-
-
 <hr>
 
 <div class="recent-review">
@@ -698,7 +695,7 @@ function logout(){
       <form class="comment-form" >
 	    <input type="hidden" id="qnum" name="qnum" value="${qna.num}">
 	    <div>
-	      <input type="text" id="qcomment" name="qcomment" style="width: 500px; padding: 8px;">
+	      <input type="text" id="qcomment${qna.num}" name="qcomment" style="width: 500px; padding: 8px;">
 	      <button type="button" onclick="qnacomment(${qna.num})">등록</button>
 	    </div>
 	  </form>

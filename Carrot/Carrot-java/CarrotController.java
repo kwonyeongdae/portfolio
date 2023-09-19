@@ -64,16 +64,11 @@ public class CarrotController {
                                   		    CarrotVO cv,HttpServletRequest request) 
       {
 		
-		System.out.println("여기 ca = " +cv);
-		System.out.println("여기 userid = " +userid);
-		System.out.println("여기 cvrimg = " +cvrimg);
-		System.out.println("여기 contimg1 = " +contimg1);
-		
       Map<String, Object> map = new HashMap<>();
+      List<CarrotAttach> filelist = new ArrayList<>();
       ServletContext context = request.getServletContext();
       String savePath = context.getRealPath("/carrot");
-      List<CarrotAttach> filelist = new ArrayList<>();
-     
+      
            try {	
 
                   String fileName = cvrimg.getOriginalFilename();
@@ -167,40 +162,24 @@ public class CarrotController {
 		
 		List<Map> comtolist = new ArrayList<>();
 		comtolist = dao.commenttocom();
-	    for (Map item : clist) {
-	        // contimg3와 contimg4를 null로 설정하거나, 빈 문자열로 설정합니다.
-	    	if (item.get("contimg1") == null) {
-	            item.put("contimg1", "");
-	        }  
-	    	if (item.get("contimg3") == null) {
-	            item.put("contimg3", "");
-	        }
-	        if (item.get("contimg4") == null) {
-	            item.put("contimg4", "");
-	        }
-	    }
+	   
 	    model.addAttribute("comto", comtolist);
 	    model.addAttribute("com", comlist);
 	    model.addAttribute("detail", clist);
 	    return "thymeleaf/carrot/detail";
 	}
+	
+	@GetMapping("/mypage")
+	public String mypage(@SessionAttribute(name = "userid", required = false)String userid,Model model) {
+		List<Map> mylist = dao.mypage(userid);
+		model.addAttribute("my",mylist);
+		return "thymeleaf/carrot/mylist";
+	}
 	//========================================carrot물건 수정로직 ================================================		
-	@GetMapping("/updateform/{cnum}")
+	@GetMapping("/updatefrom/{cnum}")
 	public String updateform(@PathVariable int cnum, Model model) {
 		List<Map> clist = dao.getcarrotandattach(cnum);
 	
-		  for (Map item : clist) {
-		        // contimg3와 contimg4를 null로 설정하거나, 빈 문자열로 설정합니다.
-			  if (item.get("contimg1") == null) {
-		            item.put("contimg1", "");
-		        }  
-			  if (item.get("contimg3") == null) {
-		            item.put("contimg3", "");
-		        }
-		        if (item.get("contimg4") == null) {
-		            item.put("contimg4", "");
-		        }
-		    }
 		model.addAttribute("up", clist);
 		return "thymeleaf/carrot/updateform";
 	}
@@ -213,10 +192,7 @@ public class CarrotController {
     		   									CarrotVO cv,HttpServletRequest request,@RequestParam int cnum) 
       {
 		
-		System.out.println("여기 ca = " +cv);
-		System.out.println("여기 userid = " +userid);
-		System.out.println("여기 cvrimg = " +cvrimg);
-		System.out.println("여기 contimg1 = " +contimg1);
+
       Map<String, Object> map = new HashMap<>();
       ServletContext context = request.getServletContext();
       String savePath = context.getRealPath("/carrot");
@@ -252,7 +228,7 @@ public class CarrotController {
 	               ca.setConttype1(conType1);
  
 	               filelist.add(ca);
-               }  
+                  }  
 	        	  cv.setClist(filelist);
 	        	  boolean update = dao.updateCarrot(cv,cnum);
 	        	  map.put("updated", update);
@@ -307,19 +283,29 @@ public class CarrotController {
 	
 	@PostMapping("/commentocom")
 	@ResponseBody
-	public Map<String,Boolean> com2comadd(Carrotcomment1 cc){
+	public Map<String,Boolean> com2comadd(@RequestParam int dcarnum,@RequestParam String duserid,@RequestParam String dcomment){
 		Map<String,Boolean> map = new HashMap<>();
-		map.put("comto", dao.comtoadd(cc));
+		map.put("comto", dao.comtoadd(dcarnum,duserid,dcomment));
+
 		return map;
 	}
 	//========================================carrot 댓글과 답글로직 ================================================
-	
+	//========================================carrot 전체삭제 로직 =================================================
+	@PostMapping("/Alldel")
+	@ResponseBody
+	public Map<String,Boolean> interestadd(int cnum){
+		Map<String,Boolean> map = new HashMap<>();
+		
+		map.put("remove", dao.All_del(cnum));
+		return map;
+	}
+	//========================================carrot 전체삭제 로직 =================================================
 	//========================================carrot 관심목록에 추가 로직 ================================================
 	@PostMapping("/interest")
 	@ResponseBody
 	public Map<String,Boolean> interestadd(Interest in){
 		Map<String,Boolean> map = new HashMap<>();
-		System.out.println("여기" + in);
+		
 		map.put("inter", dao.interests(in));
 		return map;
 	}
@@ -336,14 +322,22 @@ public class CarrotController {
 	//========================================carrot 관심목록 list 로직 ================================================
 	
 	//========================================carrot 구매으로 이동 로직 ================================================
-	@PostMapping("/carrotbuy")
+	@GetMapping("/carrotbuy")
 	@ResponseBody
-	public String buyCart(@RequestParam int cnum, HttpServletRequest request) {
+	public String buyCart(@RequestParam int cnum,@RequestParam String title, HttpServletRequest request) {
 		HttpSession session = request.getSession();
-	    // 기존에 저장된 "cartbuy" 속성 데이터를 가져와서 리스트에 추가
+	    
 	    List<CarrotVO> existingList = (List<CarrotVO>) session.getAttribute("cartbuy");
 	    if (existingList == null) {
 	    	existingList = new ArrayList<>();
+	    }
+	    
+	    for (Iterator<CarrotVO> iterator = existingList.iterator(); iterator.hasNext();) {
+	    	CarrotVO cv = iterator.next();
+            if (cv.getTitle().equals(title)) {
+                iterator.remove();
+                break;
+            	}
 	    }
 	    existingList.add(dao.session_carrot(cnum));
 	    session.setAttribute("cartbuy", existingList);

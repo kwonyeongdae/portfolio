@@ -37,7 +37,6 @@ public class CarrotDAO {
 			        }
 		    }
 		    return bSaved;
-		
 	}
 	
 	public PageInfo<Map> getallcarrot(int pageNum) {
@@ -98,8 +97,8 @@ public class CarrotDAO {
 	      return page;
 	   }
 	
-	public boolean comtoadd(Carrotcomment1 cc) {
-		return carrotmapper.comtocomadd(cc)>0;
+	public boolean comtoadd(int dcarnum,String duserid,String dcomment) {
+		return carrotmapper.comtocomadd(dcarnum,duserid,dcomment)>0;
 	}
 	
 	public List<Map> commenttocom(){
@@ -132,4 +131,15 @@ public class CarrotDAO {
 		return carrotmapper.state(saleuserid)>0;
 	}
 	
+	public List<Map> mypage(String userid){
+	      List<Map> page = carrotmapper.get_to_my(userid);
+	      return page;
+	   }
+	
+
+	public boolean All_del(int cnum) {
+		boolean carrotatt = carrotmapper.delcarrot_att(cnum)>0;
+		boolean carrot = carrotmapper.delcarrot(cnum)>0;
+		return carrotatt&&carrot;
+	}
 }

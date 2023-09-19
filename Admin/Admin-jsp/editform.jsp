@@ -25,7 +25,7 @@ function update() {
     var formData = new FormData(form);
     
     $.ajax({
-        url: '/admin/update',
+        url: '/book/update',
         method: 'post',
         enctype: 'multipart/form-data',
         cache: false,

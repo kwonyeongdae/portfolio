@@ -55,4 +55,14 @@ public interface FairyMapper
 	
 	public int boughtupdata(String userid,int cnum);
 	
+	public int up_state(int cnum);
+	
+	public String findIDByNameAndPhone(MemberVO mem);
+
+	public String findIDByNameAndEmail(MemberVO mem);
+
+	public String findPassByNameAndPhone(MemberVO mem);
+
+	public String findPassByNameAndEmail(MemberVO mem);
+
 }

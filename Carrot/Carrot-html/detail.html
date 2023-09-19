@@ -10,7 +10,7 @@
 			padding: 0;
 		}
 		main {
-			width: 80%;
+			width: 50%;
 			margin: 20px auto;
 			background-color: #fff;
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -86,7 +86,7 @@ function comment(){
 	var obj = {};
     obj.carnum = '[[${detail[0].cnum}]]';
     obj.userid = $('#userid').val();
-    obj.comment = $('#comment').val();
+    obj.comment = $('#commentInput').val();
 
     $.ajax({
       url: '/carrot/comment',
@@ -108,34 +108,32 @@ function comment(){
  
  
   
-function to_comment() {
-    if (!confirm('답글을 등록할까요?')) return;
-
+function to_comment(num) {
+   if (!confirm('답글을 등록할까요?')) return;
+    
     var obj = {};
     obj.duserid = $('#userid').val();
-    obj.dcomment = $('#dcomment').val();
-    obj.dcarnum = $('#num').val();
+    obj.dcomment = $('.dcomment' + num).val();
+    obj.dcarnum = num;
 
- 
-
-        $.ajax({
-            url: '/carrot/commentocom',
-            method: 'post',
-            data: obj,
-            cache: false,
-            dataType: 'json',
-            success: function(res) {
-                if (res.comto) {
-                    alert('등록 되었습니다.');
-                    location.reload();
-                }
-            },
-            error: function(xhr, status, err) {
-                alert(status + "/" + err);
+    $.ajax({
+        url: '/carrot/commentocom',
+        method: 'post',
+        data: obj,
+        cache: false,
+        dataType: 'json',
+        success: function(res) {
+            if (res.comto) {
+                alert('등록 되었습니다.');
+                location.reload();
             }
-        });
-  
+        },
+        error: function(xhr, status, err) {
+            alert(status + "/" + err);
+        }
+    });
 }
+
   
 function interest(){
 	if (!confirm('찜 할까요?')) return;
@@ -156,7 +154,7 @@ function interest(){
       dataType: 'json',
       success: function(res) {
         if (res.inter) {
-          alert('추가 되었습니다.');
+          alert('찜 되었습니다.');
           location.reload();
         }
       },
@@ -168,18 +166,27 @@ function interest(){
 </script>
 <script type="text/javascript">
 function buycarrot() {
-    if (!confirm("선택한 항목을 주문하시겠습니까?")) {
+    var userid = '[[${userid}]]';
+    var saleid ='[[${detail[0].userid}]]';
+	
+    if(userid==saleid){
+    	alert('본인물건은 구매가 불가합니다.')
+    	return;
+    }
+    
+	if (!confirm("선택한 항목을 주문하시겠습니까?")) {
         return;
     }
-
+	
     var item = {
         cnum: '[[${detail[0].cnum}]]',
+        title: '[[${detail[0].title}]]',
     };
 
     // AJAX 요청 보내기
     $.ajax({
         url: '/carrot/carrotbuy',
-        method: 'post',
+        method: 'get',
         data: item, // 일반 문자열 데이터 전송
         cache: false,
         success: function (res) {
@@ -190,7 +197,6 @@ function buycarrot() {
         }
     });
 }
-
 </script>
 <meta charset="utf-8">
 <title>상세페이지</title>
@@ -198,16 +204,19 @@ function buycarrot() {
 <body>
 
 <main>
-<h3> Fairy Carrot </h3>
+<h3> Fairy Carrot </h3><hr>
 
 <h1>물품 정보</h1>
 
+
 <table>
 
-<button type="button" onclick="javascript:interest();">찜하기</button>
-<button type="button" onclick="javascript:buycarrot();">구매하기</button><!-- 이건 아직구현 못함 javascript만들어야함 -->
+<button type="button" onclick="javascript:interest();" >찜하기</button>
+
+<button type="button" onclick="javascript:buycarrot();">구매하기</button>
+
 	<div id = "item" >
-	<img th:src="@{'/carrot/' + ${detail[0].cvrimg}}" style="max-width: 100px; max-height: 100px;">
+	<img th:src="@{'/carrot/' + ${detail[0].cvrimg}}" style="max-width: 300px; max-height: 900px;">
 	</div>
 	<br>
 	<div>[[${detail[0].userid}]]</div>
@@ -237,58 +246,57 @@ function buycarrot() {
 <h3>댓글달기</h3>
 <table>
 <div th:each="item : ${com}">
-
 	<tr>
          <td>
-         	 <input type="hidden" id="num" name="num" >
-		        <script>
-		        var titleFromServer = "[[${item.num}]]"; 
-		        
-		        var titleElement = document.getElementById("num");
-		        titleElement.value = titleFromServer;
-		   		</script>
+     
              [[${item.userid}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              [[${item.comment}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              <span th:text="${#dates.format(item['cardata'], 'yyyy-MM-dd')}"></span>
+             
          </td>
     </tr>
     
- <div th:each="itemto : ${comto}">   
-    <tr th:if="${item.num == itemto.dcarnum}">
-         <td>
-         	 <input type="hidden" id="dcarnum" name="dcarnum" >
-		        <script>
-		        var titleFromServer = "[[${itemto.dcarnum}]]"; 
-		        
-		        var titleElement = document.getElementById("dcarnum");
-		        titleElement.value = titleFromServer;
-		   		</script>
+	<div th:each="itemto : ${comto}">   
+    	<tr th:if="${item.num == itemto.dcarnum}">
+        	<td>
+         	
              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[[${itemto.duserid}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              [[${itemto.dcomment}]]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
              <span th:text="${#dates.format(itemto['dcardata'], 'yyyy-MM-dd')}"></span>
-         </td>
-     </tr>
-</div>
-
+         	</td>
+     	</tr>
+	</div>
+	
+		<input type="hidden" id="coms" name="dcomment" style="width: 500px; padding: 3px;">
+		<script>
+		  var comsInput = document.getElementById("coms");
+		    var titleFromServer = "dcomment" + "[[${item.num}]]";
+		    // 새로운 input 요소를 생성합니다.
+		    var newInput = document.createElement("input");
+		    newInput.type = "text";
+		    newInput.className = titleFromServer; // class 속성을 변경합니다.
+		    newInput.style.width = "500px";
+		    newInput.style.padding = "3px";
+		    newInput.value = "답글을 작성해주세요";
+		    comsInput.parentNode.appendChild(newInput);
+		</script>
 <tr>
-<td>
-<input type="text" id ="dcomment" name = "dcomment" style="width: 500px; padding: 3px;">
-	<button type="button" onclick="javascript:to_comment()">등록</button>
-</td>
-    
+	<td>
+		<button type="button" th:attr="onclick='to_comment(\'' + ${item.num} + '\')'">등록</button>
+	</td>
 </tr>
 </div>
-</div>
+
 </table>
 <from id ="addcom">
 	<input type="hidden" id ="userid" name = "userid">
 	<script>
-        var titleFromServer = "[[${userid}]]"; 
+        var userFromServer = "[[${userid}]]"; 
         
-        var titleElement = document.getElementById("userid");
-        titleElement.value = titleFromServer;
+        var userElement = document.getElementById("userid");
+        userElement.value = userFromServer;
    	</script>
-	<input type="text" id ="comment" name = "comment" style="width: 500px; padding: 3px;">
+	<input type="text" id="commentInput" name="comment" style="width: 500px; padding: 3px;">
 	<button type="button" onclick="javascript:comment()">등록</button>
 </from>
 </table>

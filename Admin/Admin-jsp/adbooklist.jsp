@@ -57,7 +57,7 @@ function deleted(bnum)
 
  function updateform(bnum){
 	 
-	 location.href = "/admin/updateform/" + bnum;
+	 location.href = "/book/updateform/" + bnum;
  }
  
  function addform(){
@@ -191,26 +191,21 @@ function deleted(bnum)
 					<span id="pageNum">${pn}</span>
 				</c:when>
 				<c:otherwise>
-				<c:url value="/book/list/page/${pn}" var="pgURL">
+				<c:url value="/admin/adbooklist/${pn}" var="pgURL">
 				<c:if test="${category!=null}">
 					<c:param name="category" value="${category}"/>
 					<c:param name="keyword" value="${keyword}"/>
 				</c:if>
-				
 				</c:url>
 				<a href="${pgURL}">${pn}</a>
-				<a href="/book/list/page/${pn+1}" style="float:right"> <button> > </button> </a>
-				<a href="/book/list/page/${pn-1}" style="float:left"> <button> < </button></a>
-				<c:if test="${pn<PageInfo.totalpages }">
-				
-				</c:if>			
-				
-				</c:otherwise>
-
+					</c:otherwise>
 			</c:choose>
-
 		</c:forEach>
-
+				
+				<a href="/admin/adbooklist/${pn+1}" style="float:right"> <button> > </button> </a>
+				<a href="/admin/adbooklist/${pn-1}" style="float:left"> <button> < </button></a>
+				<c:if test="${pn<PageInfo.totalpages }">
+				</c:if>			
 	</nav>
 
 </main>

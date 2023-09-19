@@ -385,8 +385,9 @@ function mypagego(){
 	<td><fmt:formatNumber value="${list.totalPrice}" pattern="##,##0"/></td>
 	<td><input type="number" class="quantity" value="${list.totalQuantity}" min="1" max="100" style="width: 30px;"></td>
 	<td>배송시스템<br> 미등록</td>
+	</tr>
 </c:forEach>
-</tr>
+
 <div class="floating-wrapper" >
 	 <div class="title">[최근본 상품]</div>
 		 <div id="cookieValueWrapper">

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--모바일 이용시 애니메이션 원활 위함. -->
+<head>
+<meta charset="utf-8">
+<title>암호 검색 결과</title>
+<style type="text/css">
+  main{width:fit-content; margin:6em auto;}
+  #result{color:green; font-size:2em; font-weight:bold; text-align:center;}
+  #security_guard {width:400px; position:absolute; bottom:80px; left:0; animation: grow 5s ease-in-out infinite; /* 애니메이션명, 지속시간, 타이밍 함수, 반복 횟수 */}
+  #textImage {width:400px; height:200px; position:absolute; bottom:-50px; left:40px;} 
+  #speechBubble {width:230px; float:right; margin:-80px 0 0 -90px;}   /* float:right;는 요소를 부모 요소의 오른쪽 끝으로 이동 */ 
+  #catImage {width:500px; display:block; margin-left:140px;} 
+  #go_login{ margin-top: 20px; /* 아이디와의 간격 조절 */  display: block;  margin-left: auto;  margin-right: auto;  text-align: center;}
+  /*  margin-left: auto;  margin-right: auto; 부모 요소가 가로를 전체 차지 못할 경우를 대비하기 위함 */
+  
+  @keyframes grow {
+  0% { transform: scale(0.1); } /* 시작 시 이미지 크기 조정*/
+  100% { transform: scale(1); } /* 끝날 때 이미지 크기 복원 */
+  }
+  
+</style>
+</head>
+<body>
+<main>
+  <h1 style="text-align:center;">암호 검색 결과</h1>  
+    <div id="result">[[${pass}]]</div>
+    <a id="go_login" th:href="@{/fairy/login}"><button type="button">로그인하러 가기</button></a>
+    <img id="security_guard" th:src="@{/files/fcat_guard.png}" /> 
+    <img id="textImage" th:src="@{/files/fairy_findPass.png}" />
+    <img id="speechBubble" th:src="@{/files/SpeechBubbleText.png}" />  
+    <img id="catImage" th:src="@{/files/fcat.png}" />
+</main>
+</body>
+</html>

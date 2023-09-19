@@ -46,8 +46,8 @@ GROUP BY bname, cvrimg,name
 </select>
 
 <insert id="boughtbook" parameterType="java.util.Map">
-    INSERT INTO boughtbook (bnum,userid, bname, price, quantity, cvrimg, statu, payment,buyday)
-    SELECT bnum,#{userid}, #{bname}, price, #{quantity} ,cvrimg, 0, #{payment}, CURRENT_TIMESTAMP
+    INSERT INTO boughtbook (bnum,userid, bname, price, quantity, cvrimg, statu, payment,buyday,age)
+    SELECT bnum,#{userid}, #{bname}, price, #{quantity} ,cvrimg, 0, #{payment}, CURRENT_TIMESTAMP,#{age}
     FROM book
     WHERE bname = #{bname}
 </insert>
@@ -95,7 +95,7 @@ DELETE FROM test.boughtbook WHERE num = #{num}
 UPDATE test.boughtbook SET statu = 1 WHERE num = #{num}
 </update>
 
-<select id="getchange" resultType="com.ezen.spring.board.teampro.admin.AdminVO">
+<select id="getchange" resultType="com.ezen.spring.board.teampro.cart.BookVO">
  SELECT * FROM boughtbook WHERE num = #{num}
 </select>
 

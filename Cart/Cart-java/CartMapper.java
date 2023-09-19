@@ -24,7 +24,7 @@ public interface CartMapper {
 
 	public BookVO getbeylist(String bname,String userid);
 	
-	public int boughtbook(String bname,String userid,int quantity,String payment);
+	public int boughtbook(String bname,String userid,int quantity,String payment,int age);
 	
 	public int getdeleteAll();
 	

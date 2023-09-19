@@ -280,15 +280,19 @@ function attremove(num){
     </div>
     
     <div th:each="img : ${up}">
-    <div th:switch="${up[0].contimg1.length()}">
-   
+    <div th:if="${up[0].contimg1.length() > 0}">
+                <img th:src="@{'/carrot/' + ${img.contimg1}}" style="max-width: 100px; max-height: 100px;">
+                <a th:href="'javascript:attremove(' + ${img.num} + ');'" title="첨부파일 삭제">[X]<br></a>
+     </div>
+     </div>
+    <div th:switch="${up.size()}"> 
     <th:block th:case="0">
+	
     <label for="file2">이미지1</label>
     <input type="file" id="file2" name="file2" onchange="preview1(event);">
     <div id="thumbnail_view1">
         <span>Preview Image</span>
     </div>
-    
         <label for="file2">이미지2</label>
         <input type="file" id="file3" name="file2" onchange="preview2(event);">
         <div id="thumbnail_view2">
@@ -310,7 +314,6 @@ function attremove(num){
 <!----------------------------------------사진 업데이트시 사진이 1개만 있다면 ----------------------------------------------------->
 <!----------------------------------------사진 업데이트시 사진이 1개만 있다면 ----------------------------------------------------->     
     <th:block th:case="1">
-
         <label for="file2">이미지2</label>
         <input type="file" id="file3" name="file2" onchange="preview2(event);">
         <div id="thumbnail_view2">
@@ -332,7 +335,6 @@ function attremove(num){
 <!----------------------------------------사진 업데이트시 사진이 2개만 있다면 ----------------------------------------------------->     
 <!----------------------------------------사진 업데이트시 사진이 2개만 있다면 ----------------------------------------------------->     
     <th:block th:case="2">
-
         <label for="file2">이미지3</label>
         <input type="file" id="file4" name="file2" onchange="preview3(event);">
         <div id="thumbnail_view3">
@@ -347,24 +349,14 @@ function attremove(num){
     </th:block>
 <!----------------------------------------사진 업데이트시 사진이 3개만 있다면 ----------------------------------------------------->
 <!----------------------------------------사진 업데이트시 사진이 3개만 있다면 ----------------------------------------------------->      
-    <th:block th:case="3">
-
+    <th:block th:case="*">
         <label for="file2">이미지4</label>
         <input type="file" id="file5" name="file2" onchange="preview4(event);">
         <div id="thumbnail_view4">
             <span>Preview Image</span>
         </div>
     </th:block>
-    <th:block th:case="*">
-            <div th:if="${up[0].contimg1.length() > 0}">
-                <img th:src="@{'/carrot/' + ${img.contimg1}}" style="max-width: 100px; max-height: 100px;">
-                <a th:href="'javascript:attremove(' + ${img.num} + ');'" title="첨부파일 삭제">[X]<br></a>
-            </div>
-        </th:block>
 </div>
-
-</div>
-
 
 <!----------------------------------------업데이트시 cnum전송용 ----------------------------------------------------->        
       <input type="hidden" id="cnum" name="cnum" >
@@ -378,7 +370,7 @@ function attremove(num){
       
           <div>
         <label>글쓰기<a style="color: red; font-size: 5px;">*이미지파일이 존재하면 이미지파일이 먼저 나옵니다*</a></label>
-        <textarea id="content" name="content" ></textarea>
+        <textarea id="content" name="content" ></textarea>	
         <script>
         var titleFromServer = "[[${up[0].content}]]"; 
         

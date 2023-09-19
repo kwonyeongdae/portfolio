@@ -46,6 +46,8 @@ public interface BookMapper {
 	   
     public List<Map> reviewlist(int bnum);
    
+    public int delreview(int count);
+    
     public Double score(int bnum);
    
     public int qnacomment(Qnacomment Qna);

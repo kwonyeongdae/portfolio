@@ -1,6 +1,7 @@
 package com.ezen.spring.board.teampro.cart;
 
 import java.util.*;
+
 import com.ezen.spring.board.teampro.carrotmarket.CarrotVO;
 import java.util.stream.Collectors;
 
@@ -50,9 +51,7 @@ public class CartController {
 		 ModelAndView modelAndView = new ModelAndView("cart/index");
 		return modelAndView;
 	}
-	
 
-	
 //==============================================여기서부터 카트추가=================================================================================	
 //==============================================여기서부터 카트추가=================================================================================		
 	@PostMapping("/cart/add/{bnum}")
@@ -89,7 +88,9 @@ public class CartController {
 		 model.addAttribute("book", blist);
 		return modelAndView;
 	}
-	@PostMapping("/cart/qupdate")//장바구니 내에서 수량만 추가하는 기능----------------------------------------------------
+	
+	//장바구니 내에서 수량만 추가하는 기능----------------------------------------------------
+	@PostMapping("/cart/qupdate")
 	@ResponseBody
 	public Map<String,List<Boolean>> Qupdate(@RequestParam(value="bname[]") List<String> bbname, @RequestParam(value="quantity[]") List<Integer> bquantity)
 	{
@@ -144,7 +145,7 @@ public class CartController {
 		return modelAndView;
 	}
 	
-	@PostMapping("/cart/buy")//결제창에서 원하는 품목 삭제 기능 추가----------
+	@PostMapping("/cart/buy")
 	@ResponseBody
 	public String beycart(@RequestParam(value = "bname[]") List<String> bname, HttpServletRequest request,
 	                      @SessionAttribute(name = "userid", required = false) String userid) throws Exception {
@@ -162,7 +163,7 @@ public class CartController {
 	                break;
 	            }
 	        }
-	        // 새로운 객체 추가
+	        // 세션에 새로운 객체 추가
 	        selectedBooks.add(dao.getbeylist(selectedbname, userid));
 	    }
 	    session.setAttribute("selectedBooks", selectedBooks);
@@ -181,6 +182,7 @@ public class CartController {
 	                                  @RequestParam(value = "userid") String uid,
 	                                  @RequestParam(value = "payment") String payment,
 	                                  @RequestParam(value = "quantity[]") List<Integer> quantity,
+	                                  @RequestParam(value = "age") int age,
 	                                  @SessionAttribute(name = "userid", required = false) String userid,
 	                                  HttpSession session) {
 
@@ -188,7 +190,7 @@ public class CartController {
 	    
 	    if (userid != null) {
 	        for (int i = 0; i < bname.size(); i++) {
-	            boolean bought = dao.getbought(bname.get(i), userid, quantity.get(i),payment);
+	            boolean bought = dao.getbought(bname.get(i), userid, quantity.get(i),payment,age);
 	            paramMap.put("bought", bought);
 	            if (!bought) {
 	                paramMap.put("bought", false);

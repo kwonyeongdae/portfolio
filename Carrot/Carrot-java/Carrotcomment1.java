@@ -19,6 +19,11 @@ public class Carrotcomment1 {
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "Carrotcomment1 [num=" + num + ", dcarnum=" + dcarnum + ", duserid=" + duserid + ", dcomment=" + dcomment
+				+ ", dcardata=" + dcardata + "]";
+	}
 	public int getNum() {
 		return num;
 	}

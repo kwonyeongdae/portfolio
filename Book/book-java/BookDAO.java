@@ -38,8 +38,8 @@ public class BookDAO {
 		    return bSaved;
 	}
 	
-	public PageInfo<Map> getallbook(int pageNum) {
-		PageHelper.startPage(pageNum,10);
+	public PageInfo<Map> getallbook(int pagenum,int pagesize) {
+		PageHelper.startPage(pagenum,12);
 		PageInfo<Map> pageInfo = new PageInfo<> (bookmap.getallbook());
 		
 		return pageInfo;
@@ -47,7 +47,7 @@ public class BookDAO {
 	
 	public PageInfo<Map> search(String category,String keyword, int pageNum)
 	{
-		PageHelper.startPage(pageNum,10);
+		PageHelper.startPage(pageNum,12);
 		Book vo = new Book();
 		if(category.equals("bname")) {vo.setBname(keyword);}
 		else if(category.equals("publisher")) {vo.setPublisher(keyword);}
@@ -72,11 +72,10 @@ public class BookDAO {
 	public boolean deletebook(int bnum,String contentimg) {
 		boolean bookatt = false;
 		if(!contentimg.isEmpty()) {
-		bookatt = bookmap.getattdelete(bnum)>0;
-		
-		}
+			bookatt = bookmap.getattdelete(bnum)>0;
+		   }
 		boolean book = bookmap.getdelete(bnum)>0;
-		return bookatt&&book;
+		return book;
 	}
 	
 	public boolean deleteatt(int bnum,String contentimg) {
@@ -138,6 +137,12 @@ public class BookDAO {
 	      return list;
 	   }
 	   
+	   public boolean delreview(int count) 
+	      {
+	         boolean delreview = bookmap.delreview(count)>0;
+	         return delreview;
+	      }
+
 	   
 	   public Double score(int bnum)
 	   {

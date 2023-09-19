@@ -50,10 +50,6 @@ public class AdmainController {
 	@Qualifier("adminvo")
 	AdminVO vo;
 
-	@Autowired
-    @Qualifier("fairydao")
-	private FairyDAO fairydao;
-	
 //=================================어드민 페이지 get방식 차단용 메소드==================================	
 	public Model mod(Model model,@SessionAttribute(name = "userid", required = false)String userid) {
 		return model.addAttribute("user",admindao.joinmem(userid));
@@ -110,7 +106,7 @@ public class AdmainController {
 	    } else if (category.equals("year")) {
 	        // 연도별 데이터 조회를 위한 SQL 쿼리 실행
 	    	daylist = admindao.getByYear(key);
-	    }else if (category.equals("uid")) {
+	    }else if (category.equals("userid")) {
 	        // 연도별 데이터 조회를 위한 SQL 쿼리 실행
 	    	daylist = admindao.getById(key);
 	    }
@@ -156,14 +152,6 @@ public class AdmainController {
 		return "admin/adbooklist";
 		
 	}
-	//=======================================책 수정하는 로직=============================
-	@GetMapping("/updateform/{bnum}")
-	public String detail(Model model , @PathVariable int bnum)
-	{
-		model.addAttribute("book" , dao.getbook(bnum));
-		return "admin/editform";
-	}
-	
 	
 	@PostMapping("/delete/{bnum}")
 	@ResponseBody
@@ -186,47 +174,5 @@ public class AdmainController {
 	}
 	
 	
-	@PostMapping("/update")
-	   @ResponseBody
-	   public Map<String,Boolean> update(
-	                             @RequestParam("conimg") MultipartFile contentimg,
-	                             Book bo,HttpServletRequest request)
-	   {
-	      Map<String,Boolean> map = new HashMap<>();
-	      ServletContext context = request.getServletContext();
-	       String savePath = context.getRealPath("/img");
-	       List<Bookattach> filelist = new ArrayList<>();
-	       try {
-	          if(contentimg != null && !contentimg.isEmpty()) {
-	               String contentName = contentimg.getOriginalFilename();
-	                 contentimg.transferTo(new File(savePath + "/" + contentName));
-	                 String conType = contentimg.getContentType();
-	                 String conName = contentimg.getName();
-	                 Resource con = contentimg.getResource();
-	                 long conSize = contentimg.getSize();
-	                 boolean cont = contentimg.isEmpty();
-	                 
-	                 Bookattach ba = new Bookattach();
-	                 
-	                 ba.setContentimg(contentName);
-	                 ba.setConsize(conSize/1024);
-	                 ba.setContype(conType);
-	                 filelist.add(ba);
-	                 
-	                 bo.setFlist(filelist);
-	                
-	                 boolean success = dao.updateBook(bo);
-	              map.put("update", success);
-	            }else {
-	               boolean success = dao.updateBook(bo);
-	             map.put("update", success);
-	            }
-	       } catch (Exception e) {
-	         e.printStackTrace();
-	       }   
-	         return map;
-	   }
-		
-
 	
 }

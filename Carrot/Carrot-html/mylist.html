@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+
+<style type="text/css">
+ body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 20px;
+            color: #333;
+            font-size: 36px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: #f2f2f2;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+function update(cnum) {
+    if (!confirm("수정 하시겠습니까?"))return;
+    location.href = "/carrot/updatefrom/"+cnum;
+}
+
+
+function del(cnum){
+	if (!confirm("물품을 삭제겠습니까?")) {
+	    return false;
+	}
+	var obj = {};
+	obj.cnum = cnum;
+
+	$.ajax({
+	    url: '/carrot/Alldel',
+	    data:obj,
+	    method: 'post',
+	    cache: false,
+	    dataType: 'json',  
+	    success: function(res) {
+	    	var message = res.remove ? "삭제 성공" : "삭제 실패";
+	        alert(message);
+	        	location.reload();
+	        
+	    },
+	    error: function(err) {
+	        alert('에러: ' + err);
+	    }
+	});
+}
+</script>
+<meta charset="utf-8">
+<title>내 중고물품</title>
+</head>
+<body>
+<h1 th:text="'[' + ${userid} + ']님의 물품'"></h1><hr>
+	<table>
+        <thead>
+            <tr>
+              <th>이미지</th>
+              <th>내용</th>
+              <th>날짜</th>
+              <th>HIT</th>
+              <th>판매상태</th>
+              <th>선택</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+          <tr th:each="item : ${my}">
+               <td><img th:src="@{'/carrot/' + ${item.cvrimg}}" style="max-width: 100px; max-height: 100px;"></td>
+			   <td>
+			   <a th:if="${item.state == '판매완료'}" th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}" style="text-decoration:line-through"></a>
+			   <a th:if="${item.state == '판매중'}" th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}" ></a>
+			   </td>
+			   <td><span th:text="${#dates.format(item['cdata'], 'yyyy-MM-dd')}"></span></td>
+			   <td th:text="${item.hitnum}"></td>
+			   <td th:text="${item.state}"></td>
+			   <td>
+			   <button type="button" th:attr="onclick='update(\'' + ${item.cnum} + '\')'">수정</button>
+			   <button type="button" th:attr="onclick='del(\'' + ${item.cnum} + '\')'">삭제</button>
+			   </td>
+		  </tr>
+        </tbody>
+     </table>
+</body>
+</html>

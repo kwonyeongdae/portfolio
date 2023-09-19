@@ -25,14 +25,7 @@ public class BookVO {
 	String contenttype;
 	int mileage;
 	private String payment;
-	
-	public int getQuantity() {
-		return quantity;
-	}
-	
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+	int age;
 	
 	public BookVO(){ 
 		quantity = 0;
@@ -42,7 +35,7 @@ public class BookVO {
 	
 	public BookVO(int num, int bnum, String bname, String name, String publisher, String author, int price,
 			String pdate, String cvrimg, int quantity, int sum, String cate, String userid, int totalQuantity,
-			int totalPrice, long fsize, String contenttype, int mileage, String payment) {
+			int totalPrice, long fsize, String contenttype, int mileage, String payment,int age) {
 		super();
 		this.num = num;
 		this.bnum = bnum;
@@ -63,6 +56,7 @@ public class BookVO {
 		this.contenttype = contenttype;
 		this.mileage = mileage;
 		this.payment = payment;
+		this.age = age;
 	}
 
 	@Override
@@ -82,6 +76,14 @@ public class BookVO {
 		return Objects.equals(bname, other.bname) && Objects.equals(userid, other.userid);
 	}
 
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
 	public String getName() {
 		return name;
 	}
@@ -95,7 +97,13 @@ public class BookVO {
 				+ sum + ", userid=" + userid + "]";
 	}
 	
+	public int getQuantity() {
+		return quantity;
+	}
 	
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
 	public String getPayment() {
 		return payment;
 	}

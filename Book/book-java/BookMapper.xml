@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ezen.spring.board.teampro.book.BookMapper">
+
 <insert id ="qnaadd" parameterType="com.ezen.spring.board.teampro.book.QnAVO">
 INSERT INTO qna (qnum,userid,qcontent,qnadate) values(#{qnum},#{userid},#{qcontent}, CURRENT_TIMESTAMP)
 </insert>
@@ -26,8 +27,7 @@ SELECT * FROM bookattach where bnum = #{bnum}
 </select>
 
 <select id="getallbook" resultType="map">
-SELECT * FROM book
-
+SELECT * FROM book ORDER BY bnum DESC
 </select>
 
 <select id="search" parameterType="com.ezen.spring.board.teampro.book.Book"
@@ -36,7 +36,7 @@ SELECT * FROM book
 	WHERE
 	<choose>
 		<when test="bname != null">
-			bname = #{bname}
+			bname LIKE CONCAT('%', #{bname}, '%')
 		</when>
 		<when test="publisher != null">
 			publisher = #{publisher}
@@ -52,7 +52,7 @@ SELECT * FROM book
 	resultType="com.ezen.spring.board.teampro.book.Book">
 	SELECT * FROM book
 	WHERE cate = #{cate}
-	</select>
+</select>
 
 <select id="getbook" resultType="java.util.Map" parameterType="Integer">
 SELECT b.*,a.contentimg
@@ -107,14 +107,16 @@ LIMIT 3;
 <insert id="addreview" parameterType="com.ezen.spring.board.teampro.book.review">
 INSERT INTO review (bnum,bname,userid,reviewcontents,score,rdate)
 VALUE (#{bnum},#{bname},#{userid},#{reviewcontents},#{score},#{rdate})
-
 </insert>
 
 <select id="reviewlist" parameterType="Integer" resultType="map">
 SELECT * FROM test.review WHERE bnum=#{bnum} ORDER BY count DESC
-
-
 </select>
+
+<delete id="delreview" parameterType="Integer">
+DELETE FROM test.review WHERE count =#{count}
+</delete>
+
 
 <select id="score" parameterType="int" resultType="java.lang.Double">
  SELECT ROUND(COALESCE(SUM(score) / COUNT(*), 0.0), 1) AS divided_score

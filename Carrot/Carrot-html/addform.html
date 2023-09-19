@@ -111,12 +111,15 @@ function add(){
      } else if (file2 == "") {
        alert("'첫번째사진' 은 필수입니다");
        return false;
-       } else if (1 == "") {
+       } else if (file1 == "") {
       alert("'메인사진' 은 필수입니다");
       return false;
      } 
    
    if (!confirm("글을 모두 작성하셨나요?")) {
+       return false;
+   }
+   if (!confirm("판매 사진과 물품이 다를시 형사처벌이 될 수 있습니다. 상태를 모두 확인하셨나요?")) {
        return false;
    }
    $('#btnUpload').prop('disabled', true);
@@ -160,7 +163,20 @@ function preview(evt) {
     reader.readAsDataURL(evt.target.files[0]);
 }
 
+function preview2(evt) {
+    var reader = new FileReader();
 
+    reader.onload = function (event) {
+        var thumbnailContainer = document.getElementById("thumbnail_view1");
+        thumbnailContainer.innerHTML = "";
+
+        var img = document.createElement("img");
+        img.src = event.target.result;
+        thumbnailContainer.appendChild(img);
+    };
+
+    reader.readAsDataURL(evt.target.files[0]);
+}
 </script>
 <meta charset="utf-8">
 <title>추가 폼</title>
@@ -193,29 +209,29 @@ function preview(evt) {
         <input type="text" id="price" name="price">
     </div>
     <div>
-       <label for="img">이미지1</label>
-        <input type="file" id="file2" name="file2" onchange="preview1(event);">
+       <label for="img">이미지1<span style = "color:red; font-size:3px">*첫번째 사진은 필수 입니다</span></label>
+        <input type="file" id="file2" name="file2" onchange="preview2(event);">
         </div>
       <div id="thumbnail_view1">
                 <span>Preview Image</span>
             </div>
       <div>
        <label for="img">이미지2</label>
-        <input type="file" id="file2" name="file2" onchange="preview1(event);">
+        <input type="file" id="file2" name="file2" onchange="preview3(event);">
         </div>
       <div id="thumbnail_view2">
                 <span>Preview Image</span>
             </div>     
       <div>
        <label for="img">이미지3</label>
-        <input type="file" id="file2" name="file2" onchange="preview1(event);">
+        <input type="file" id="file2" name="file2" onchange="preview4(event);">
         </div>
       <div id="thumbnail_view3">
                 <span>Preview Image</span>
             </div>
       <div>
        <label for="img">이미지4</label>
-        <input type="file" id="file2" name="file2" onchange="preview1(event);">
+        <input type="file" id="file2" name="file2" onchange="preview5(event);">
         </div>
       <div id="thumbnail_view4">
                 <span>Preview Image</span>

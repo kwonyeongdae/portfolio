@@ -44,7 +44,7 @@
             background-color: #f2f2f2;
         }
 
-	h3 {
+   h3 {
         text-align: center;
         font-size: 36px;
         background-color: #333;
@@ -74,22 +74,95 @@ button:hover {
     background-color: #555;
 }
 </style>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+<script type="text/javascript">
+function delreview(count){
+   
+   
+   
+   if(!confirm('이 리뷰를 삭제할까요?')) return;
+   
+   $.ajax({
+      url:"/book/book/review/del/"+count,
+      method:'post',
+      data: { count: count },
+      cache:false,
+      dataType:'json',
+      success:function(res){
+         alert(res.del ? '삭제 완료' : '삭제 실패');
+         location.reload();
+      },
+      error:function(xhr,status,err){
+         console.error("XHR Status:", status);
+           console.error("Error:", err);
+           console.error("Response:", xhr.responseText);
+         alert(status + "/" + err);
+      }
+      
+      
+      
+      
+      
+      
+      
+   });
+   
+   return false;
+}
+
+</script>
+
+
 
 </head>
 <body>
 <h3>전체리뷰</h3><hr>
-<table>
-<tr><th>아이디</th> <th>리뷰</th> <th>평점</th></tr>
-	<c:forEach var="re" items="${pageInfo.list}">
-		
-		<tr><td>${re.userid}</td>
-		
-		<td>${re.reviewcontents }</td>
-	
-		<td>${re.score}</td></tr>
-	</c:forEach>
+<c:choose>
+   <c:when test="${user.number eq 9}">
+   <table>
+   <tr><th>아이디</th> <th>리뷰</th> <th>평점</th> <th>삭제</th></tr>
+      <c:forEach var="re" items="${pageInfo.list}">
+         
+         <tr>
+         
+         <td>${re.userid}</td>
+         
+         <td>${re.reviewcontents }</td>
+      
+         <td>${re.score}</td>
+         
+         <td><button onclick="return delreview(${re.count})"> 삭제  </button></td>
+         
+         </tr>
+         
+         
+      </c:forEach>
+    
+   </table>
+   
+   
+   
+   
+   </c:when>
 
-</table>
+
+
+   <c:otherwise>
+   <table>
+   <tr><th>아이디</th> <th>리뷰</th> <th>평점</th></tr>
+      <c:forEach var="re" items="${pageInfo.list}">
+         
+         <tr><td>${re.userid}</td>
+         
+         <td>${re.reviewcontents }</td>
+      
+         <td>${re.score}</td></tr>
+      </c:forEach>
+   
+   </table>
+   </c:otherwise>
+   
+</c:choose>
 <button onclick="history.back()">책 상세정보로 돌아가기</button>
 
 </body>

@@ -63,8 +63,16 @@
             width: 80%;
             margin: 0 auto;
             padding: 20px;
+            font-size: 15px;
+            
         }
-
+        #vib2 {
+            width: 150%;
+            margin: 0 auto;
+            padding: 20px;
+            font-size: 15px;
+        }
+ 
         /* Password Modal Styles */
         #passwordModal {
             display: none;
@@ -146,11 +154,26 @@
     
     <!-- 다른 경우(카테고리 없음) -->
     <th:block th:case="*">
-        <!-- 카테고리로 검색한 경우 총 매출 부분 숨김 -->
         <h1>상품목록</h1>
         <hr>
         <table>
-	   <div id ="vib"><a href="/carrot/add">추가</a></div>
+	   <div id ="vib">
+	   <a href="/carrot/add" style ="font-size:20px;">추가</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   
+	   <a href="/carrot/mypage" style ="font-size:20px;">내 목록</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	   <a href="/carrot/interestform" style ="font-size:20px;">찜 목록</a>
+	   </div>
             <thead>
                 <tr>
                     <th>이미지</th>
@@ -166,10 +189,10 @@
                 <span th:if="${item.state != '판매완료'}">
 				    <td><img th:src="@{'/carrot/' + ${item.cvrimg}}" style="max-width: 100px; max-height: 100px;"></td>
 				    <td>
-				        
-				            <a th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}"></a>
-				        
-				        <span th:if="${item.state == '판매완료'}" th:text="${item.title}"  style="text-decoration:line-through"></span>
+				        <span th:if="${item.state == '거래중'}">
+				        <a th:href="@{/carrot/detail/{cnum}(cnum=${item.cnum})}" th:text="${item.title}"></a>
+				        </span>
+				        <span th:if="${item.state == '판매자확인중'}" th:text="${item.title}"  style="text-decoration:line-through"></span>
 				    </td>
 				    <td><span th:text="${#dates.format(item['cdata'], 'yyyy-MM-dd')}"></span></td>
 				    <td th:text="${item.hitnum}"></td>

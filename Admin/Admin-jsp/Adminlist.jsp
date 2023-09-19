@@ -45,7 +45,7 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
          </tr>
          <c:forEach var="list" items="${alist}">
             <tr>
-               <td>${list.beyday}</td>
+               <td>${list.buyday}</td>
                <td>${list.bname}</td>
                <td>${list.quantity}</td>
                <td>${list.price}</td>
@@ -151,8 +151,8 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
 <!-- ================================여기서부터 이용자 매출 출력======================================================================= -->
 <!-- ================================여기서부터 이용자 매출 출력======================================================================= -->
 <c:choose>
-   <c:when test="${param.category eq 'uid'}">
-      <h1>${daylist[0].uid}님의 총구매액</h1>
+   <c:when test="${param.category eq 'userid'}">
+      <h1>${daylist[0].userid}님의 총구매액</h1>
       <form id="day" action="/admin/list/data" method="get">
          <table>
             <tr>
@@ -164,7 +164,7 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
             <c:set var="totalPrice" value="0" />
 		<c:forEach var="dlist" items="${daylist}">
 		   <tr>
-		      <td>${dlist.beyday}</td>
+		      <td>${dlist.buyday}</td>
 		      <td>${dlist.bname}</td>
 		      <td>${dlist.quantity}개</td>
 		      <td class="price">${dlist.price}원</td>
@@ -172,7 +172,7 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
 		   <c:set var="totalPrice" value="${totalPrice + dlist.price}" />
 		</c:forEach>
 		</table>
-		<div id="divv" style="color: red;">*${daylist[0].uid}님의 총구매액 = ${totalPrice}원*</div>
+		<div id="divv" style="color: red;">*${daylist[0].userid}님의 총구매액 = ${totalPrice}원*</div>
       </form>
    </c:when>
 </c:choose>
@@ -184,7 +184,7 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
     <option value="day">일</option>
     <option value="month">월</option>
     <option value="year">연도</option>
-    <option value="uid">아이디</option>
+    <option value="userid">아이디</option>
 </select>
 <input type="text" name="key">
 <input type="submit" value="검색">
@@ -204,7 +204,7 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
             exampleText = "2023-01";
         } else if (selectedOption === "year") {
             exampleText = "2023";
-        }else if (selectedOption === "uid") {
+        }else if (selectedOption === "userid") {
             exampleText = "아이디를 입력하세요";
         }
 

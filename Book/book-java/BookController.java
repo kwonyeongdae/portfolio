@@ -114,10 +114,12 @@ public class BookController {
 	         @SessionAttribute(name = "userid", required = false)String userid
 	         )
 	   {
+		int pagenum = pn;
+	    int pagesize = 3;
 		List<CarrotVO> clist = new ArrayList<>();
   		clist = fairydao.carrot(userid);
   		model.addAttribute("users",clist);
-		model.addAttribute("rest",fairydao.getJoinedMem(userid));
+		model.addAttribute("rest",dao.getmember(userid));
 	      PageInfo<Map> pageInfo = null;
 	      List<Book> list = new ArrayList<>();
 	      if(category !=null)
@@ -126,7 +128,7 @@ public class BookController {
 	         model.addAttribute("category" , category);
 	         model.addAttribute("keyword", keyword);
 	      }else {
-	         pageInfo = dao.getallbook(pn);
+	         pageInfo = dao.getallbook(pagenum,pagesize);
 	         
 	      }
 	      list = dao.best();
@@ -142,9 +144,10 @@ public class BookController {
 	@PostMapping("/search")
 	public String search( @RequestParam("category") String category,
 						 @RequestParam("keyword") String keyword,
-						 Model model)
+						 @SessionAttribute(name = "userid", required = false)String userid,Model model)
 	{
 		PageInfo<Map> pageInfo = dao.search(category, keyword,1);
+		model.addAttribute("user",dao.getmember(userid));
 		model.addAttribute("pageInfo", pageInfo);
 		model.addAttribute("category", category);
 		model.addAttribute("keyword", keyword);
@@ -164,25 +167,7 @@ public class BookController {
 		return "book/catelist"; 
 	}
 	
-	@PostMapping("/delete/{bnum}")
-	@ResponseBody
-	public Map<String,Boolean> getdeletebook(@PathVariable int bnum,@RequestParam String cvrimg, @RequestParam String contentimg){
-		Map<String,Boolean> map = new HashMap<>();
-		boolean del = false;
-		Path thepath = Paths.get("/img" +"/" + cvrimg);
-        del = dao.deletebook(bnum,contentimg);
-        if(del==true) {
-        try {
-	        if (Files.exists(thepath)) {
-	            Files.delete(thepath);
-	        }
-	        }catch (Exception e) {
-				// TODO: handle exception
-			}
-        }
-		map.put("deleted", del);
-		return map;
-	}
+	
 //=======================================여기까지 list===============================================
 //=======================================여기까지 list================================================
 	
@@ -191,7 +176,6 @@ public class BookController {
 	@GetMapping("/book/{bnum}")//detail부분
 	public ModelAndView getbook(@PathVariable int bnum,Model model,@SessionAttribute(name = "userid", required = false)String userid)
 	{
-		model.addAttribute("rest",fairydao.getJoinedMem(userid));
 		model.addAttribute("user",dao.getmember(userid));
 		List<Map> blist = new ArrayList<>();
 		blist = dao.getbook(bnum);
@@ -223,18 +207,101 @@ public class BookController {
 	      map.put("added", added);
 	      return map;
 	   }
-	  @GetMapping("/book/reviewlist/{bnum}/{pn}")
-	   public String reviewlist(@PathVariable int bnum,Model model , @PathVariable int pn)
+	 @GetMapping("/book/reviewlist/{bnum}/{pn}")
+     public String reviewlist(@PathVariable int bnum,Model model , @PathVariable int pn,
+           @SessionAttribute(name = "userid", required = false)String userid)
+     {
+        PageInfo<Map> list = dao.allreview(bnum,pn);
+        model.addAttribute("pageInfo" , list);
+        model.addAttribute("user", dao.getmember(userid));
+        return "book/review";
+        
+     }
+	 
+    @PostMapping("/book/review/del/{count}")
+    @ResponseBody
+    public Map<String,Boolean> delreview(@PathVariable int count
+         ){
+       
+       boolean del = false;
+       Map<String,Boolean> map = new HashMap<>();
+       
+       del = dao.delreview(count);
+       map.put("del", del);
+       return map;
+
+    }
+  //=======================================책 수정하는 로직=============================
+  	@GetMapping("/updateform/{bnum}")
+  	public String detail(Model model , @PathVariable int bnum)
+  	{
+  		model.addAttribute("book" , dao.getbook(bnum));
+  		return "admin/editform";
+  	}
+  	
+  	@PostMapping("/update")
+	@ResponseBody
+	   public Map<String,Boolean> update(
+	                             @RequestParam("conimg") MultipartFile contentimg,
+	                             Book bo,HttpServletRequest request)
 	   {
-	      PageInfo<Map> list = dao.allreview(bnum,pn);
-	      model.addAttribute("pageInfo" , list);
-	      
-	      return "book/review";
-	      
+	      Map<String,Boolean> map = new HashMap<>();
+	      ServletContext context = request.getServletContext();
+	       String savePath = context.getRealPath("/img");
+	       List<Bookattach> filelist = new ArrayList<>();
+	       try {
+	          if(contentimg != null && !contentimg.isEmpty()) {
+	               String contentName = contentimg.getOriginalFilename();
+	                 contentimg.transferTo(new File(savePath + "/" + contentName));
+	                 String conType = contentimg.getContentType();
+	                 String conName = contentimg.getName();
+	                 Resource con = contentimg.getResource();
+	                 long conSize = contentimg.getSize();
+	                 boolean cont = contentimg.isEmpty();
+	                 
+	                 Bookattach ba = new Bookattach();
+	                 
+	                 ba.setContentimg(contentName);
+	                 ba.setConsize(conSize/1024);
+	                 ba.setContype(conType);
+	                 filelist.add(ba);
+	                 
+	                 bo.setFlist(filelist);
+	                
+	                 boolean success = dao.updateBook(bo);
+	              map.put("update", success);
+	            }else {
+	               boolean success = dao.updateBook(bo);
+	             map.put("update", success);
+	            }
+	       } catch (Exception e) {
+	         e.printStackTrace();
+	       }   
+	         return map;
 	   }
 	  
-	  @PostMapping("addqna")
-		@ResponseBody
+  	@PostMapping("/delete/{bnum}")
+	@ResponseBody
+	public Map<String,Boolean> getdeletebook(@PathVariable int bnum,@RequestParam String cvrimg, @RequestParam String contentimg){
+		Map<String,Boolean> map = new HashMap<>();
+		boolean del = false;
+		Path thepath = Paths.get("/img" +"/" + cvrimg);
+        del = dao.deletebook(bnum,contentimg);
+        if(del==true) {
+        try {
+	        if (Files.exists(thepath)) {
+	            Files.delete(thepath);
+	        }
+	        }catch (Exception e) {
+				// TODO: handle exception
+			}
+        }
+		map.put("deleted", del);
+		return map;
+	}
+  	
+	@PostMapping("addqna")
+	@ResponseBody
 		public Map<String,Boolean> addqna(QnAVO vo){
 			Map<String,Boolean> map = new HashMap<>();
 			boolean qna = dao.addqna(vo);
@@ -242,8 +309,8 @@ public class BookController {
 			return map;
 		}
 		
-		@PostMapping("/attremove")
-		@ResponseBody
+	@PostMapping("/attremove")
+	@ResponseBody
 		public Map<String, Boolean> remove(@RequestParam("bnum")int bnum,
 											@RequestParam("contentimg")String contentimg)
 		{
@@ -253,8 +320,8 @@ public class BookController {
 			return map;
 		}
 		
-		@PostMapping("/qnacomment")
-		@ResponseBody
+	@PostMapping("/qnacomment")
+	@ResponseBody
 		public Map<String, Boolean> qnacomment(Qnacomment Qna)
 		{
 			Map<String, Boolean> map = new HashMap<>();

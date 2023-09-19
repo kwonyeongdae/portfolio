@@ -81,7 +81,14 @@ table{border-spacing:0; border-collapse:collapse; padding: 200px; border: 1px so
         width:80%;
     
     }
-
+ #bougth{
+	 width: 50px;
+	 height: 30px;
+	 text-align: center;
+	 display: inline-block;
+	 margin: 0 auto;
+	 font-size: 15px;
+ }
 </style>
 <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -136,6 +143,10 @@ function bought() {
     $('.userid').each(function () {
         uid = $(this).val();
     });
+    var age;
+    $('.age').each(function () {
+        age = $(this).val();
+    });
     
     
     var bnumAjaxComplete = false;
@@ -147,6 +158,7 @@ function bought() {
             'userid': uid,
             'quantity[]': quantityArray,
             'payment': paymentType,
+            'age':age,
         };
         $.ajax({
             url: '/fairy/cart/bought',
@@ -370,6 +382,7 @@ function bought() {
     <input type="hidden" class="bname" value="${book.bname}">
     <input type="hidden" class="userid" value="${book.userid}">
     <input type="hidden" class="quantity" value="${book.totalQuantity}">
+    <input type="hidden" class="age" value="${user.age}">
     <tr>
         <td><img src="/img/${book.cvrimg}" style="max-width: 100px; max-height: 100px;"></td>
         <td>${book.bname}</td>
@@ -442,7 +455,8 @@ function bought() {
 </div>
 <table>
 <div id="divv1" style="font-size: 20px;">
-    총 상품 결제할 금액 : <span id="totalAmount2">${totalAmount + totalAmount1}원</span>
+    총 상품 결제할 금액 : <span id="totalAmount2"><fmt:formatNumber value="${totalAmount + totalAmount1}"/>원</span>
+    <button type="button" id="bougth" onclick="bought(); pointdown();">결제</button>
 </div>
 
 <script>
@@ -479,11 +493,9 @@ function processPayment() {
 }
 </script>
 
-
-<button type="button" id="bougth" onclick="bought(); pointdown();">결제</button>
 <div id ="divv2"></div>
     <tr>
-    	<h3>결제방법</h3>
+    	<div style ="color:red; font-size:5px; text-align: center;">*선택후 결제 진행해 주세요</div><h3>결제방법</h3>
 	    <th><input type="radio" class ="payment1" name ="pay" value ='신용카드'>신용카드</button></th>
 	    <th><input type="radio" class ="payment2" name ="pay" value ='네이버페이'>네이버페이<img src="/img/ne.jpg" style="max-width: 200px; max-height: 30px;"></button></th>
 	    <th><input type="radio" class ="payment3" name ="pay" value ='카카오페이'>카카오페이<img src="/img/kA.jpg" style="max-width: 200px; max-height: 30px;"></button></th>

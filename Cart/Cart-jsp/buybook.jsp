@@ -154,8 +154,8 @@ $(document).ready(function(){
 
 </head>
 <body>
-<h3> fairy book's </h3>
-<a href="/book/list/page/1"> [메인으로] </a>
+<h3> <a href="/book/list/page/1">fairy book's </a></h3>
+
 <c:set var="userid" value="${sessionScope.userid}"/>
 
 
@@ -180,6 +180,7 @@ $(document).ready(function(){
 			
 			</c:when>
 			<c:otherwise>
+
 			[<a href="/fairy/cart/buylist/${userid}"> 구매목록 </a>]
 			[<a href=javascript:logout();>로그아웃</a>]
 			[<a href="/fairy/editMem/${userid}"> 회원정보 수정</a>]
@@ -196,7 +197,7 @@ $(document).ready(function(){
 		</div>
 	
 	</div>
-<h1>${ userid }님의 구매품목</h1><div>보유한 마일리지: ${mileage.mileage}</div>
+<h1>${userid}님의 구매품목</h1><div>보유한 마일리지: ${mileage.mileage}</div>
 <h4> 책을 읽으시려면 이미지를 클릭하세요</h4>
 <table>
 <tr>
@@ -208,6 +209,7 @@ $(document).ready(function(){
 			<td>${book.bname}</td>
 			<td> 
 			<a href="/fairy/cart/slideshow"> <img src="/img/${book.cvrimg}" style="max-width: 100px; max-height: 100px;"> </a>
+			 
 			 </td>
 		</tr>
 </c:forEach>

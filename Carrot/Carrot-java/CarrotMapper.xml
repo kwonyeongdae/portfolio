@@ -8,7 +8,7 @@
 	      SELECT LAST_INSERT_ID()
 	   	</selectKey>
 INSERT INTO carrot
-VALUES(NULL,#{userid},#{cvrimg},#{imgsize},#{imgtype},#{price}, #{title}, #{content},#{hitnum},#{state},#{number},CURRENT_TIMESTAMP)
+VALUES(NULL,#{userid},#{cvrimg},#{imgsize},#{imgtype},#{price}, #{title}, #{content},#{state},#{hitnum},CURRENT_TIMESTAMP)
 </insert>
 
 <insert id="addcarrotfile" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotAttach">
@@ -58,6 +58,14 @@ where b.cnum=#{cnum}
 DELETE FROM test.carrotattach WHERE num = #{num}
 </delete>
 
+<delete id="delcarrot" parameterType="Integer">
+DELETE FROM test.carrot WHERE cnum = #{cnum}
+</delete>
+
+<delete id="delcarrot_att" parameterType="Integer">
+DELETE FROM test.carrotattach WHERE cnum = #{cnum}
+</delete>
+
 <insert id ="comtadd" parameterType="com.ezen.spring.board.teampro.carrotmarket.Carrotcomment">
 INSERT INTO carrotcomment (carnum,userid,comment,cardata) values(#{carnum},#{userid},#{comment}, CURRENT_TIMESTAMP)
 </insert>
@@ -93,6 +101,10 @@ UPDATE carrot SET state = '판매자확인중' WHERE userid = #{saleuserid}
 <insert id="boughtcarrot" parameterType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO">
 INSERT INTO boughtcarrot values(NULL,#{cnum},#{buyuserid},#{title},#{price},CURRENT_TIMESTAMP,#{saleuserid},0,#{payment})
 </insert>
+
+<select id="get_to_my" resultType="com.ezen.spring.board.teampro.carrotmarket.CarrotVO" parameterType="String">
+SELECT * FROM carrot WHERE userid = #{userid}
+</select>
 
 </mapper>
  

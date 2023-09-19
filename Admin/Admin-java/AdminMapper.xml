@@ -6,44 +6,46 @@
 
 <insert id="adminadd"
 	  parameterType="com.ezen.spring.board.teampro.login.MemberVO">
-	  INSERT INTO fairymem VALUES(NULL, #{userid}, #{pass}, #{name}, #{phone}, #{email}, #{birth}, #{gender}, #{agrStipulation1}, #{agrStipulation2}, #{agrStipulation3},#{number})
+	  INSERT INTO fairymem (fnum, userid, pass, name, phone, email, postal_code, contact_address, detailed_address, birth, age, gender, agrStipulation1, agrStipulation2, agrStipulation3, number,carrotpoint,mileage) 
+     VALUES(NULL, #{userid}, #{pass}, #{name}, #{phone}, #{email}, #{postal_code}, #{contact_address}, #{detailed_address}, #{birth}, 1, #{gender}, #{agrStipulation1}, #{agrStipulation2}, #{agrStipulation3}, 9,0,0)
 </insert>
 	
 <select id="getlist" resultType="com.ezen.spring.board.teampro.admin.AdminVO" >
-SELECT quantity,beyday,bname, userid, price FROM boughtbook;
+SELECT quantity,buyday,bname, userid, price FROM boughtbook;
 </select>
 
 <select id="getByDay" resultType="com.ezen.spring.board.teampro.admin.AdminVO" parameterType="String">
-        SELECT DAY(beyday) AS day, bname, quantity, price,userid
+        SELECT DAY(buyday) AS day, bname, quantity, price,userid
         FROM boughtbook
-        WHERE beyday = #{beyday}
-        GROUP BY DAY(beyday), bname, quantity, price,userid
+        WHERE DATE(buyday) = #{buyday}
+        GROUP BY DAY(buyday), bname, quantity, price,userid
     </select>
     
     <select id="getByMonth" resultType="com.ezen.spring.board.teampro.admin.AdminVO" parameterType="String">
-        SELECT MONTH(beyday) AS month,DAY(beyday) AS day, bname, quantity, price, SUM(price*quantity) AS total,userid
+        SELECT MONTH(buyday) AS month,DAY(buyday) AS day, bname, quantity, price, SUM(price*quantity) AS total,userid
         FROM boughtbook
-        WHERE YEAR(beyday) = #{year}
-            AND MONTH(beyday) = #{month}
-        GROUP BY MONTH(beyday), DAY(beyday), bname, quantity, price,userid
+        WHERE YEAR(buyday) = #{year}
+            AND MONTH(buyday) = #{month}
+        GROUP BY MONTH(buyday), DAY(buyday), bname, quantity, price,userid
     </select>
     
     <select id="getByYear" resultType="com.ezen.spring.board.teampro.admin.AdminVO" parameterType="String">
-        SELECT MONTH(beyday) AS month,YEAR(beyday) AS year,
+        SELECT MONTH(buyday) AS month,YEAR(buyday) AS year,
        SUM(quantity) AS totalquantity,
        SUM(price*quantity) AS total
 		FROM boughtbook
-		WHERE YEAR(beyday) = #{year}
-		GROUP BY MONTH(beyday),YEAR(beyday);
+		WHERE YEAR(buyday) = #{year}
+		GROUP BY MONTH(buyday),YEAR(buyday);
     </select>
 
 <select id="getByid" resultType="com.ezen.spring.board.teampro.admin.AdminVO" parameterType="String">
-        SELECT beyday, bname, quantity, price, userid,
+        SELECT buyday, bname, quantity, price, userid,
        SUM(price*quantity) AS total
 		FROM boughtbook
 		WHERE userid = #{userid}
-		GROUP BY beyday, bname, quantity, price,userid
+		GROUP BY buyday, bname, quantity, price,userid
     </select>
+    
 <select id="getallbook" resultType="com.ezen.spring.board.teampro.book.Book" parameterType="java.util.List">
 SELECT * FROM book
 </select>
@@ -71,4 +73,6 @@ SELECT * FROM book
 <select id="getJoinedMem" parameterType="string" resultType="com.ezen.spring.board.teampro.login.MemberVO">
       SELECT * FROM fairymem WHERE userid = #{userid}
      </select>
+     
+     
 </mapper>

@@ -6,6 +6,7 @@
 <meta charset="utf-8">
 <title>회원가입 폼</title>
 <style type="text/css">
+    
 	main {width:fit-content; margin:0.5em auto; }
 	main > h3 { text-align: center;}
 	form { border:1px solid black; padding:2em; }
@@ -17,7 +18,9 @@
     #postal_code { margin-left: -1em; width:100px;}
     #contact_address { margin-left:7.8em; margin-top:0.9em; width:250px;}
     #detailed_address  { margin-top:0.5em; width:350px;}
-	#br-label {display:inline-block; width:5.2em; margin-left:0.7em;}
+    #br-label {display:inline-block; width:5.2em; margin-left:0.7em;}
+	#age-label {display:inline-block; width:auto; margin-left:0.1em; margin-top:0.5em;}
+	#age {margin-left:0.4em; width:25px;}
 	fieldset {width: 7em;}
 	form>div:last-child { margin-top:1em;} 
 	
@@ -43,7 +46,7 @@
     .fairy-text-right {
       position: absolute;
       top: 10px;
-      right: 50px;
+      right: 10px;
       animation: moveUpDownRight 10s infinite alternate;
       z-index: 2;
     }
@@ -51,18 +54,18 @@
     #bear-moving {
       position: absolute;
       top: 10px;
-      right: 50px;
+      right: 8px;
       animation: moveUpDownRight 10s infinite alternate;
       z-index: 1;
       animation-delay: 2.5s; /* 시간 차 주기 */
-      witdh:150px;
+      witdh:200px;
       height:150px;
     }
 
 
     @keyframes moveUpDownRight {
-      0% { transform: translateY(500px) translateX(0);}
-      100% { transform: translateY(50px) translateX(0);}
+      0% { transform: translateY(500px) translateX(10px);}
+      100% { transform: translateY(50px) translateX(10px);}
     }
   
     #background-image {
@@ -86,7 +89,7 @@
       animation-iteration-count: infinite;
       animation-direction: alternate;
       top: calc(100% + 50px);
-      left: calc(1% + (97% * var(--i) / 19)); /* 양쪽 끝 1% 여유 주고 97% 차지 */
+      left: calc((1% + (95% * var(--i) / 18)) - (5% * var(--i) / 18)); /* 양쪽 끝 1% 여유 주고 95% 차지 , 풍선 개수 18개, 5%를 조절하여 조금씩 왼쪽으로 밀기 */
       animation-duration: calc(15s + var(--i) * 3s);   
     }
 
@@ -124,6 +127,7 @@ function form_check() {
   var detailed_address = document.getElementById("detailed_address").value;
   var genderInput = document.querySelector('input[name="gender"]:checked');
   var birth = document.getElementById("birth").value;
+  var age = document.getElementById("age").value;
   var agrStipulation1 = document.getElementById("agrStipulation1").checked;
   var agrStipulation2 = document.getElementById("agrStipulation2").checked;
   var agrStipulation3 = document.getElementById("agrStipulation3").checked;
@@ -147,6 +151,9 @@ function form_check() {
   } else if (email == "") {
     alert("'이메일' 입력은 필수입니다");
     return false;
+  } else if (age == "") {
+	alert("'나이' 입력은 필수입니다");
+	return false;
   } else if (!genderInput) {
 	alert("'성별' 선택은 필수입니다");
 	return false;
@@ -204,6 +211,7 @@ function form_check() {
 		    contact_address: contact_address,
 		    detailed_address: detailed_address,
 		    birth: birth,
+		    age: age,
 		    gender: gender,
 		    agrStipulation1: agrStipulation1,
 		    agrStipulation2: agrStipulation2,
@@ -420,19 +428,24 @@ function findAddr(){
 		<input name="contact_address" id="contact_address" type="text" placeholder="기본 주소" readonly> 
 		<input name="detailed_address" id="detailed_address" type="text" placeholder="상세 주소">
     </div>
-    
-   <div>
+    <div>
      <label for="birth" id="br-label">생년월일</label>
      <input type="text" name="birth" id="birth"> 
-    <span style="color:#282828; font-size:12px; padding:0 0 0 14px;">(생년월일이 85년 1월 1일인 경우: 850101)</span>
-  </div>
-    <div>
+    <span style="color:#787878; font-size:12px; padding:0 0 0 14px;">(생년월일이 85년 1월 1일인 경우: 850101)</span>
+  </div> 
+  <div>
       <fieldset>
         <legend>* 성별</legend>
         남자<input type="radio" name="gender" value="m">
         여자<input type="radio" name="gender" value="f">
       </fieldset>
     </div>
+   <div>
+     <label for="age" id="age-label">* 자녀 혹은 주이용 아동 나이</label>
+     <span style="color: blue;">만</span><input type="text" name="age" id="age">세
+    <span style="color:#282828; font-size:12px; padding:0 0 0 14px;">(<span style="color: red;"><b>아동의 나이</b></span>를 입력해주세요. 도서를 추천해드립니다.)</span>
+  </div>
+    
 <table width="905" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td style="width:193px; font:20px malgun gothic; vertical-align:top; letter-spacing:-1px; padding:25px 0 0 10px">* 약관 동의</td>

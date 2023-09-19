@@ -71,7 +71,7 @@ public class BoardController {
 	      
 	      Map<String, Object> map = new HashMap<>();
 	      ServletContext context = request.getServletContext();
-	       String savePath = context.getRealPath("/files");
+	       String savePath = context.getRealPath("WEB-INF/files");
 	       List<FileVO> fileList = new ArrayList<>();
 	          try {
 	             for(int i=0;i<mfiles.length;i++) {

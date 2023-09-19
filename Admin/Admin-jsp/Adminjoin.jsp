@@ -138,15 +138,15 @@ function form_check() {
 		  };
 
  $.ajax({
-    url: '/fairy/join',
+    url: '/admin/add',
     method: 'post',
     data: formdata,
 
    cache: false,
     dataType: 'json',
     success: function (res) {
-      alert(res.addedJoin ? '가입을 환영합니다. ♡.♡' : '가입에 실패하였습니다. 관리자에게 문의해주세요.');
-      if (res.addedJoin) {
+      alert(res.added ? '가입을 환영합니다. ♡.♡' : '가입에 실패하였습니다. 관리자에게 문의해주세요.');
+      if (res.added) {
 
        location.href = '/fairy/login';
         //가입 환영 이메일을 보내기 등

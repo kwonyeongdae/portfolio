@@ -164,7 +164,7 @@ function showPasswordModal(bnum,pass) {
 <hr>
 <table>
     <thead>
-    <div id ="vib"><a href="/board/board/add">추가</a></div>
+    <div id ="vib"><a href="/board/board/add" >추가</a></div>
     
     <tr>
         <th>NO</th>

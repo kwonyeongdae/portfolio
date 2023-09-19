@@ -40,8 +40,8 @@ public class CartDAO {
 	}
 	
 	@Transactional
-	public boolean getbought(String bname,String userid,int quantity,String payment){
-	      boolean bsave = CartMapper.boughtbook(bname,userid, quantity,payment)>0;
+	public boolean getbought(String bname,String userid,int quantity,String payment,int age){
+	      boolean bsave = CartMapper.boughtbook(bname,userid, quantity,payment,age)>0;
 	      boolean mileage = CartMapper.updateMileage(bname, userid, quantity)>0;
 	      boolean delbook = CartMapper.getdelete(bname)>0;
 	      

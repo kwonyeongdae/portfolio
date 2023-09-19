@@ -34,7 +34,7 @@ public interface CarrotMapper {
 
 	 public List<Map> getcomment(int carnum);
 
-	 public int comtocomadd(Carrotcomment1 cc);
+	 public int comtocomadd(int dcarnum,String duserid,String dcomment );
 	 
 	 public List<Map> getcommenttocom();
 	 
@@ -50,4 +50,9 @@ public interface CarrotMapper {
 	 
 	 public int state(String saleuserid);
 	 
+	 public List<Map> get_to_my(String userid);
+	 
+	 public int delcarrot(int cnum);
+	 
+	 public int delcarrot_att(int cnum);
 }

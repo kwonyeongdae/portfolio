@@ -5,6 +5,7 @@ import java.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ezen.spring.board.teampro.book.Book;
 import com.ezen.spring.board.teampro.book.Bookattach;
@@ -46,6 +47,7 @@ public class AdminDAO {
 		PageInfo<Map> pageInfo = new PageInfo<> (adminmapper.getallbook());
 		return pageInfo;
 	}
+
 	public PageInfo<Map> search(String category,String keyword, int pageNum)
 	{
 		PageHelper.startPage(pageNum,10);

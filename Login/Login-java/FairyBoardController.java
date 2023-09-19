@@ -1,5 +1,6 @@
 package com.ezen.spring.board.teampro.login;
 
+import java.io.IOException;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -279,6 +280,184 @@ public class FairyBoardController
      map.put("point", point);
      return map;
   }   
+  
+  @GetMapping("/find/ID")
+  public String findforID() 
+  {
+     return "thymeleaf/find/findforID";
+
+  }
+  
+  @PostMapping("/find/ID/byPhone")
+  @ResponseBody
+  public Map<String, Object> findIDByNameAndPhone(@RequestParam("name") String name, @RequestParam("phone") String phone)
+  {
+    MemberVO mem = new MemberVO(); 
+    mem.setName(name);
+    mem.setPhone(phone);
+    
+    String userID= fairydao.findIDByNameAndPhone(mem);
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    if (userID != null && !userID.isEmpty()) 
+    {
+         map.put("found", true);
+         map.put("userID", userID);
+     }else{
+         map.put("found", false);
+         map.put("userID", "");
+     }
+       
+       return map;  
+   }
+
+@PostMapping("/find/ID/byEmail")
+  @ResponseBody
+  public Map<String, Object> findIDByNameAndEmail(@RequestParam("name") String name, @RequestParam("email") String email)
+  {
+    MemberVO mem = new MemberVO();
+    mem.setName(name);
+    mem.setEmail(email);
+    
+     String userID= fairydao.findIDByNameAndEmail(mem);
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    if (userID != null && !userID.isEmpty()) 
+    {
+         map.put("found", true);
+         map.put("userID", userID);
+     }else{
+         map.put("found", false);
+         map.put("userID", "");
+     }
+       
+       return map;  
+   }
+  
+  @GetMapping("/findID/result/{userID}")
+  public String findforIDResult(@PathVariable("userID") String userid, Model model) 
+  {
+     String maskedUserId = maskUserId(userid);
+     model.addAttribute("userid", userid);
+     model.addAttribute("userid", maskedUserId);
+     return "thymeleaf/find/resultFindID";
+
+  }
+  
+  // 아이디 마스킹 처리
+  public String maskUserId(String userid) 
+  {
+       int length = userid.length();
+       if (length <= 4) {
+           return "**";
+       } else {
+           int start = (length / 2) - 1;
+           return userid.substring(0, start) + "**" + userid.substring(start + 2, length);
+       }
+   }
+
+  @GetMapping("/find/pass")
+  public String findforPass() 
+  {
+     return "thymeleaf/find/findforPass";
+
+  }
+
+  //기본 패스워드 찾기
+  @PostMapping("/find/pass/byPhone")
+  @ResponseBody
+  public Map<String, Object> findPassByNameAndPhone(@RequestParam("name") String name, @RequestParam("phone") String phone)
+  {
+    MemberVO mem = new MemberVO(); 
+    mem.setName(name);
+    mem.setPhone(phone);
+    
+    String pass= fairydao.findPassByNameAndPhone(mem);
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    if (pass != null && !pass.isEmpty()) 
+    {
+         map.put("found", true);
+         map.put("pass", pass);
+     }else{
+         map.put("found", false);
+         map.put("pass", "");
+     }
+       
+       return map;  
+   }
+
+@PostMapping("/find/pass/byEmail")
+  @ResponseBody
+  public Map<String, Object> findPassByNameAndEmail(@RequestParam("name") String name, @RequestParam("email") String email)
+  {
+    MemberVO mem = new MemberVO();
+    mem.setName(name);
+    mem.setEmail(email);
+    
+     String pass= fairydao.findPassByNameAndEmail(mem);
+    
+    Map<String, Object> map = new HashMap<>();
+    
+    if (pass != null && !pass.isEmpty()) 
+    {
+         map.put("found", true);
+         map.put("pass", pass);
+     }else{
+         map.put("found", false);
+         map.put("pass", "");
+     }
+       
+       return map;  
+   }
+  
+  @GetMapping("/findPass/result/{pass}")
+  public String findforPassResult(@PathVariable("pass") String pass, Model model) 
+  {
+     String maskedPass = maskUserPass(pass);
+     model.addAttribute("pass", pass);
+     model.addAttribute("pass", maskedPass);
+     return "thymeleaf/find/resultFindPass";
+
+  }
+  
+  public String maskUserPass(String pass) 
+  {
+       int length = pass.length();
+       if (length <= 4) {
+           return "***";
+       } else {
+           int start = (length / 2) - 1;
+           int end = start + 3; 
+           if (end > length) {
+               end = length;
+               start = end - 3;
+          
+               if (start < 0)
+                   start = 0;
+           }
+           return pass.substring(0, start) + "***" + pass.substring(end);
+       }
+   }
+
+  @GetMapping("/fairybooks")
+  public String recommendBook(HttpSession session, Model model, @SessionAttribute(name = "userid", required = false) String userid) 
+  {
+      try {
+          BookRecommender_GET bookRecommender = new BookRecommender_GET();
+          String recommendations = bookRecommender.getRecommendations(userid);
+          session.setAttribute("recommendations", recommendations);
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+
+      model.addAttribute("recommendations", session.getAttribute("recommendations"));
+      
+      return "fairy/rec_book";
+  }
 
 }
 

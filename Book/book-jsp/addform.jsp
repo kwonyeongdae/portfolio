@@ -225,7 +225,12 @@ function preview1(evt) {
         <textarea id="content" name="content"></textarea>
     <div>
         <label>카테고리</label>
-        <input type="text" id="cate" name="cate">
+        <select id="cate" name="cate">
+           <option value="">카테고리 선택</option>
+           <option value="a">동물</option>
+           <option value="b">공주</option>
+           <option value="c">사물</option>
+        </select>
     </div>
     <div>
         <button id="btnUpload" type="submit">확인</button>
